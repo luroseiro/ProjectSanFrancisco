@@ -13,19 +13,6 @@ import java.io.IOException;
 public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
-
-        /*//Leitura de arquivos
-        String fileName = "C:\\Users\\lf_ro\\Downloads\\test.txt";
-
-        try {
-            ReadFile file = new ReadFile(fileName);
-            String[] aryLines = file.OpenFile();
-        }
-        catch (IOException e) {
-            System.out.println("Erro ao ler arquivo!");
-        }*/
-
-        //Interface
         launch(args);
     }
 
