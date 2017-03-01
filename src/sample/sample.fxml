@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <HBox>
+         <children>
+            <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1100.0" HBox.hgrow="ALWAYS">
+              <menus>
+                <Menu fx:id="menu" mnemonicParsing="false" text="Arquivo">
+                  <items>
+                    <MenuItem fx:id="setupButton" mnemonicParsing="false" onAction="#SetupButton" text="Carregar setup..." />
+                        <MenuItem fx:id="lineButton" mnemonicParsing="false" onAction="#LineButton" text="Carregar fila..." />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Controles">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Play" />
+                        <MenuItem mnemonicParsing="false" text="Play x2" />
+                        <MenuItem mnemonicParsing="false" text="Play x3" />
+                        <MenuItem mnemonicParsing="false" text="Pause" />
+                        <MenuItem mnemonicParsing="false" text="Reset" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </HBox>
+      <HBox fx:id="guiches" alignment="TOP_CENTER" layoutY="50.0" prefHeight="100.0" prefWidth="1100.0" spacing="50.0" />
+   </children>
+</Pane>
