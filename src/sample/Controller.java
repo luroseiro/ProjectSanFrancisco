@@ -42,6 +42,8 @@ public class Controller {
         try {
             ReadFile file = new ReadFile(pathLine);
             String[] arrayLine = file.OpenFile();
+
+            System.out.println(arrayLine[0]);
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }

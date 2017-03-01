@@ -10,6 +10,12 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+class User {
+    public int numberUser;
+    public int arriveUser;
+    public String guiches;  
+};
+
 public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
