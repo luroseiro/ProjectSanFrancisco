@@ -3,10 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,7 +18,7 @@ public class Main extends Application {
 
         StackPane root = loader.load();
         primaryStage.setTitle("Project San Francisco");
-        primaryStage.setScene(new Scene(root, 1000, 650));
+        primaryStage.setScene(new Scene(root, 1300, 650));
         primaryStage.setResizable(false);
         primaryStage.show();
     }

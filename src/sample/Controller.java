@@ -4,9 +4,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.MenuItem;
 import javafx.fxml.FXML;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -20,27 +17,44 @@ public class Controller {
     private MenuItem lineButton;
 
     @FXML
-    public Canvas canvas;
+    private Canvas canvas;
 
-    public String[] SetupButton() {
+    public void SetupButton() {
+        //Explorador de arquivos
         FileChooser fileChooserSetup = new FileChooser();
         fileChooserSetup.setInitialDirectory(new File("C:\\Users\\lf_ro\\Downloads"));
         fileChooserSetup.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Arquivo de texto", "*.txt"));
         File setupFile = fileChooserSetup.showOpenDialog(null);
 
+        //Arquivo setup
         String pathSetup = setupFile.getAbsolutePath();
         String[] arraySetup = null;
+
+        //Desenhar
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
+        //Relação de postos
+        char ultimoGuiche = arraySetup[1].charAt(arraySetup[1].length() - 1);
+        Guiches[] guiches = new Guiches[arraySetup[1].length() - 4];
+        int k = 0;
+
         try {
+            //Leitura de arquivo
             ReadFile file = new ReadFile(pathSetup);
             arraySetup = file.OpenFile();
-            drawGuiches(graphicsContext, modificaString(arraySetup[1]));
+
+            //conta guiches de cada tipo
+            for(char j = 'A'; j <= ultimoGuiche; j++) {
+                for(int i = 3; i < arraySetup[1].length(); i++) {
+                    if(arraySetup[1].charAt(i) == j) {
+                        guiches[k].quantidade++;
+                    }
+                }
+                k++;
+            }
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }
-
-        return arraySetup;
     }
 
     public void LineButton() {
@@ -57,18 +71,5 @@ public class Controller {
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }
-    }
-
-    public String[] modificaString(String oldString) {
-        String[] newString = oldString.split("");
-        return newString;
-    }
-
-    public void drawGuiches(GraphicsContext gc, String[] relacaoGuiches) {
-        gc.setFill(Color.RED);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(5);
-        gc.strokeLine(40,10,10,40);
-        gc.fillOval(10,60,30,30);
     }
 }
