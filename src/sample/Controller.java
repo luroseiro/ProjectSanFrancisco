@@ -28,23 +28,23 @@ public class Controller {
 
         //Arquivo setup
         String pathSetup = setupFile.getAbsolutePath();
-        String[] arraySetup = null;
+        String[] arraySetup;
 
         //Desenhar
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
-        //Relação de postos
-        char ultimoGuiche = arraySetup[1].charAt(arraySetup[1].length() - 1);
-        Guiches[] guiches = new Guiches[arraySetup[1].length() - 4];
-        int k = 0;
 
         try {
             //Leitura de arquivo
             ReadFile file = new ReadFile(pathSetup);
             arraySetup = file.OpenFile();
+            //Relação de postos
+            char ultimoGuiche = arraySetup[1].charAt(arraySetup[1].length() - 1);
+            Guiches[] guiches = new Guiches[arraySetup[1].length() - 4];
+            int k = 0;
 
             //conta guiches de cada tipo
             for(char j = 'A'; j <= ultimoGuiche; j++) {
+                guiches[k] = new Guiches();
                 for(int i = 3; i < arraySetup[1].length(); i++) {
                     if(arraySetup[1].charAt(i) == j) {
                         guiches[k].quantidade++;
