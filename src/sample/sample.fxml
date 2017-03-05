@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<StackPane alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <HBox>
          <children>
-            <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1050.0" HBox.hgrow="ALWAYS">
+            <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1300.0" HBox.hgrow="ALWAYS">
                <menus>
                   <Menu fx:id="menu" mnemonicParsing="false" text="Arquivo">
                      <items>
@@ -29,6 +31,6 @@
             </MenuBar>
          </children>
       </HBox>
-      <Canvas fx:id="canvas" height="625.0" width="1000.0" />
+      <Canvas fx:id="canvas" height="655.0" width="1300.0" />
    </children>
 </StackPane>

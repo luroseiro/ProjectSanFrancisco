@@ -3,13 +3,28 @@ package sample;
 public class Guiches {
     int quantidade;
     int custo;
+    int localizacaoX;
+    int localizacaoY;
     String rotulo;
-    String tipo;
+    char tipo;
 
-    public void CriaGuiches(int quantidade, int custo, String rotulo, String tipo) {
-        this.quantidade = quantidade;
+    void setCusto(int custo) {
         this.custo = custo;
+    }
+
+    void setRotulo(String rotulo) {
         this.rotulo = rotulo;
+    }
+
+    void setTipo(char tipo) {
         this.tipo = tipo;
+    }
+
+    void setLocalizacaoX(int localizacaoX) {
+        this.localizacaoX = localizacaoX;
+    }
+
+    void setLocalizacaoY(int localizacaoY) {
+        this.localizacaoY = localizacaoY;
     }
 }
