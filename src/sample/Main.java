@@ -20,6 +20,7 @@ public class Main extends Application {
         primaryStage.setTitle("Project San Francisco");
         primaryStage.setScene(new Scene(root, 1300, 680));
         primaryStage.setResizable(false);
+
         primaryStage.show();
     }
 

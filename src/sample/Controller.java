@@ -2,8 +2,8 @@ package sample;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.MenuItem;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -41,20 +41,18 @@ public class Controller {
             ReadFile file = new ReadFile(pathSetup);
             arraySetup = file.OpenFile();
 
-            //prepara guiches
+            //prepara setup
             Guiches[] guiches = new Guiches[arraySetup[1].length() - 3];
             char ultimoGuiche = arraySetup[1].charAt(arraySetup[1].length() - 1);
             char ultimoAtendente = arraySetup[2].charAt(arraySetup[2].length() - 1);
             int qtdeGuiche = contaGuiches(guiches, ultimoGuiche, arraySetup[1]);
             setPropertyOfGuiches(guiches, arraySetup, ultimoGuiche, ultimoAtendente);
-
-            //desenha guiches
             drawGuiches(guiches, graphicsContext, qtdeGuiche);
+
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }
     }
-
     public void LineButton() {
         FileChooser fileChooserLine = new FileChooser();
         fileChooserLine.setInitialDirectory(new File("C:\\Users\\lf_ro\\Downloads"));
@@ -62,11 +60,17 @@ public class Controller {
         File lineFile = fileChooserLine.showOpenDialog(null);
 
         String pathLine = lineFile.getAbsolutePath();
+        String[] arrayLine;
 
         try {
             //leitura de arquivo
             ReadFile file = new ReadFile(pathLine);
-            String[] arrayLine = file.OpenFile();
+            arrayLine = file.OpenFile();
+
+            //prepara fila
+            Usuarios[] usuarios = new Usuarios[arrayLine.length];
+            setPropertyOfUsers(usuarios, arrayLine);
+
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }
@@ -273,5 +277,36 @@ public class Controller {
             }
         }
         //-----------------------------------------------------------------------------------
+    }
+
+    public void setPropertyOfUsers(Usuarios[] usuarios, String[] arrayLine) {
+        int countUltimo = 1, countPrimeiro;
+
+        for(int linha = 0; linha < arrayLine.length; linha++) {
+            //define userOrdem
+            usuarios[linha] = new Usuarios();
+            contagem:
+            for(int i = 1; i < arrayLine[linha].length(); i++) {
+                if(arrayLine[linha].charAt(i) == 'C') {
+                    countUltimo = i;
+                    break contagem;
+                }
+            }
+            usuarios[linha].userOrdem = Integer.parseInt(arrayLine[linha].substring(1, countUltimo));
+
+            //define chegada
+            countPrimeiro = countUltimo + 1;
+            contagem2:
+            for(int i = countPrimeiro; i < arrayLine[linha].length(); i++) {
+                if(arrayLine[linha].charAt(i) == 'A') {
+                    countUltimo = i;
+                    break contagem2;
+                }
+            }
+            usuarios[linha].chegada = Integer.parseInt(arrayLine[linha].substring(countPrimeiro, countUltimo));
+
+            //define precisaIr
+            usuarios[linha].precisaIr = arrayLine[linha].substring(countUltimo, arrayLine[linha].length());
+        }
     }
 }
