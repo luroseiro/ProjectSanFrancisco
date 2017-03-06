@@ -37,19 +37,19 @@ public class Controller {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         try {
-            //Leitura de arquivo
+            //leitura de arquivo
             ReadFile file = new ReadFile(pathSetup);
             arraySetup = file.OpenFile();
 
-            //Prepara guiches
+            //prepara guiches
             Guiches[] guiches = new Guiches[arraySetup[1].length() - 3];
             char ultimoGuiche = arraySetup[1].charAt(arraySetup[1].length() - 1);
+            char ultimoAtendente = arraySetup[2].charAt(arraySetup[2].length() - 1);
             int qtdeGuiche = contaGuiches(guiches, ultimoGuiche, arraySetup[1]);
-            setPropertyOfGuiches(guiches, arraySetup, ultimoGuiche);
+            setPropertyOfGuiches(guiches, arraySetup, ultimoGuiche, ultimoAtendente);
 
-            //Desenha guiches
+            //desenha guiches
             drawGuiches(guiches, graphicsContext, qtdeGuiche);
-
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
         }
@@ -64,6 +64,7 @@ public class Controller {
         String pathLine = lineFile.getAbsolutePath();
 
         try {
+            //leitura de arquivo
             ReadFile file = new ReadFile(pathLine);
             String[] arrayLine = file.OpenFile();
         } catch (IOException e) {
@@ -87,7 +88,7 @@ public class Controller {
 
         return qtdeGuiche;
     }
-    public void setPropertyOfGuiches(Guiches[] guiches, String[] arraySetup, char ultimoGuiche) {
+    public void setPropertyOfGuiches(Guiches[] guiches, String[] arraySetup, char ultimoGuiche, char ultimoAtendente) {
         //define custo e rotulo
         int posGuiche = 0;
         for(int i = 4; i < arraySetup.length; i++) {
@@ -108,7 +109,7 @@ public class Controller {
         for (int atendentes = 3; atendentes < arraySetup[2].length(); atendentes++) {
             if(guiches[aux].tipo == arraySetup[2].charAt(atendentes)) {
                 guiches[aux].atendentes++;
-                if(arraySetup[2].charAt(atendentes) != ultimoGuiche) {
+                if((arraySetup[2].charAt(atendentes) != ultimoGuiche) && (arraySetup[2].charAt(atendentes) != ultimoAtendente)) {
                     if (guiches[aux].tipo != arraySetup[2].charAt(atendentes + 1)) {
                         aux++;
                     }
@@ -127,44 +128,61 @@ public class Controller {
         if(maxGuiche <= 11) {
             int posicaoTriagem = 520;
             if (guiches[0].quantidade > 1) {
-                gc.setFill(Color.BLUE);
+                if(guiches[0].atendentes == 0)
+                    gc.setFill(Color.GRAY);
+                else
+                    gc.setFill(Color.BLUE);
+
                 gc.fillRoundRect(1165, posicaoTriagem - ((guiches[0].quantidade - 1) * 85), 85, guiches[0].quantidade * 85, 10, 10);
                 gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 20, maxWidth);
-                //desenha linhas
-                for (int i = 1; i < guiches[0].quantidade; i++) {
-                    gc.strokeLine(1166, posicaoTriagem - (85 * (i - 1)), 1249, posicaoTriagem - (85 * (i - 1)));
-                }
+                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 30, maxWidth);
+                gc.setFont(Font.font(13));
+                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 7, maxWidth);
+                gc.setFont(Font.font(40));
+                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 15, maxWidth);
             }
             else {
-                gc.setFill(Color.BLUE);
+                if(guiches[0].atendentes == 0)
+                    gc.setFill(Color.GRAY);
+                else
+                    gc.setFill(Color.BLUE);
+
                 gc.fillRoundRect(1165, posicaoTriagem, 85, 85, 10, 10);
                 gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 20, maxWidth);
+                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 30, maxWidth);
+                gc.setFont(Font.font(13));
+                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 7, maxWidth);
                 gc.setFont(Font.font(40));
                 gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 55, maxWidth);
             }
         }
         else {
-            double posicaoTriagem = 285;
+            int posicaoTriagem = 285;
             if (guiches[0].quantidade > 1) {
-                gc.setFill(Color.BLUE);
+                if(guiches[0].atendentes == 0)
+                    gc.setFill(Color.GRAY);
+                else
+                    gc.setFill(Color.BLUE);
+
                 gc.fillRoundRect(1165, posicaoTriagem - ((guiches[0].quantidade - 1) * 42.5), 85, guiches[0].quantidade * 85, 10, 10);
                 gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 42.5) - 20, maxWidth);
-
-                //desenha atendentes
-
-                //desenha linhas
-                for (int i = 1; i < guiches[0].quantidade; i++) {
-                    gc.strokeLine(1166, posicaoTriagem - (42.5 * (i - 1)), 1249, posicaoTriagem - (42.5 * (i - 1)));
-                }
+                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 42.5) - 30, maxWidth);
+                gc.setFont(Font.font(13));
+                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 45) - 7, maxWidth);
+                gc.setFont(Font.font(40));
+                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 15, maxWidth);
             }
             else {
-                gc.setFill(Color.BLUE);
+                if(guiches[0].atendentes == 0)
+                    gc.setFill(Color.GRAY);
+                else
+                    gc.setFill(Color.BLUE);
+
                 gc.fillRoundRect(1165, posicaoTriagem, 85, 85, 10, 10);
                 gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 20, maxWidth);
+                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 30, maxWidth);
+                gc.setFont(Font.font(13));
+                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - 7, maxWidth);
                 gc.setFont(Font.font(40));
                 gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 55, maxWidth);
             }
@@ -176,51 +194,79 @@ public class Controller {
             if(desenhados < 10) {
                 if (guiches[grupoGuiche].quantidade > 1) {
                     maxWidth *= guiches[0].quantidade;
+                    if(guiches[grupoGuiche].atendentes == 0)
+                        gc.setFill(Color.GRAY);
+                    else
+                        gc.setFill(Color.BLUE);
+
                     gc.setFont(Font.font(20));
-                    gc.setFill(Color.BLUE);
                     gc.fillRoundRect(posicaoProx, 50, guiches[grupoGuiche].quantidade * 85, 85, 10, 10);
                     gc.setFill(Color.BLACK);
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + (guiches[grupoGuiche].quantidade * 85) / 2, 25, maxWidth);
-                    //desenha linhas
-                    for (int i = 1; i < guiches[grupoGuiche].quantidade; i++) {
-                        gc.strokeLine(posicaoProx + (85 * i), 51, posicaoProx + (85 * i), 134);
-                    }
+                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + ((guiches[grupoGuiche].quantidade - 1) * 85), 15, maxWidth);
+                    gc.setFont(Font.font(13));
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProx + ((guiches[grupoGuiche].quantidade - 1) * 85),38, maxWidth);
+                    gc.setFont(Font.font(40));
+                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProx + ((guiches[grupoGuiche].quantidade - 1 )* 85), 105, maxWidth);
+
+                    //controle
                     desenhados++;
                     posicaoProx += (guiches[grupoGuiche].quantidade * 85) + 20;
                 } else {
-                    gc.setFill(Color.BLUE);
+                    if(guiches[grupoGuiche].atendentes == 0)
+                        gc.setFill(Color.GRAY);
+                    else
+                        gc.setFill(Color.BLUE);
+
                     gc.fillRoundRect(posicaoProx, 50, 85, 85, 10, 10);
                     gc.setFill(Color.BLACK);
                     gc.setFont(Font.font(20));
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + 42.5, 25, maxWidth);
+                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + 42.5, 15, maxWidth);
+                    gc.setFont(Font.font(13));
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProx + 42.5, 38, maxWidth);
                     gc.setFont((Font.font(40)));
                     gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProx + 42.5, 105, maxWidth);
+
+                    //controle
                     desenhados++;
                     posicaoProx += 100;
                 }
             }
             else {
                 if (guiches[grupoGuiche].quantidade > 1) {
-                    maxWidth *= guiches[0].quantidade;
+                    maxWidth *= guiches[grupoGuiche].quantidade;
+                    if(guiches[grupoGuiche].atendentes == 0)
+                        gc.setFill(Color.GRAY);
+                    else
+                        gc.setFill(Color.BLUE);
+
                     gc.setFont(Font.font(20));
-                    gc.setFill(Color.BLUE);
                     gc.fillRoundRect(posicaoProxBaixo, 520, guiches[grupoGuiche].quantidade * 85, 85, 10, 10);
                     gc.setFill(Color.BLACK);
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + (guiches[grupoGuiche].quantidade * 85) / 2, 630, maxWidth);
-                    //desenha linhas
-                    for (int i = 1; i < guiches[grupoGuiche].quantidade; i++) {
-                        gc.strokeLine(posicaoProxBaixo + (85 * i), 521, posicaoProxBaixo + (85 * i), 604);
-                    }
+                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 485, maxWidth);
+                    gc.setFont(Font.font(13));
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 462, maxWidth);
+                    gc.setFont(Font.font(40));
+                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 85 * (guiches[grupoGuiche].quantidade - 1), 575, maxWidth);
+
+                    //controle
                     desenhados++;
                     posicaoProxBaixo += (guiches[grupoGuiche].quantidade * 85) + 20;
                 } else {
-                    gc.setFill(Color.BLUE);
+                    if(guiches[grupoGuiche].atendentes == 0)
+                        gc.setFill(Color.GRAY);
+                    else
+                        gc.setFill(Color.BLUE);
+
                     gc.fillRoundRect(posicaoProxBaixo, 520, 85, 85, 10, 10);
                     gc.setFill(Color.BLACK);
                     gc.setFont(Font.font(20));
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + 42.5, 495, maxWidth);
+                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + 42.5, 485, maxWidth);
+                    gc.setFont(Font.font(13));
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + 42.5, 462, maxWidth);
                     gc.setFont((Font.font(40)));
                     gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 42.5, 575, maxWidth);
+
+                    //controle
                     desenhados++;
                     posicaoProxBaixo += 100;
                 }
