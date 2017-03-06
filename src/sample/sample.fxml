@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.canvas.*?>
@@ -31,6 +32,9 @@
             </MenuBar>
          </children>
       </HBox>
-      <Canvas fx:id="canvas" height="655.0" width="1300.0" />
+      <Canvas fx:id="canvas" height="655.0" width="1300.0">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin></Canvas>
    </children>
 </StackPane>

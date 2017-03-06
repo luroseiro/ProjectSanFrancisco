@@ -1,8 +1,6 @@
 package sample;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
+import java.io.*;
 
 public class ReadFile {
     private String path;
@@ -12,8 +10,7 @@ public class ReadFile {
     }
 
     public String[] OpenFile() throws IOException {
-        FileReader fR = new FileReader(path);
-        BufferedReader textReader = new BufferedReader(fR);
+        BufferedReader textReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "ISO-8859-1"));
 
         int numberLines = readLines();
         String[] textData = new String[numberLines];

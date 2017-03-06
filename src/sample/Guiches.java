@@ -5,6 +5,7 @@ public class Guiches {
     int custo;
     int localizacaoX;
     int localizacaoY;
+    int atendentes;
     String rotulo;
     char tipo;
 
