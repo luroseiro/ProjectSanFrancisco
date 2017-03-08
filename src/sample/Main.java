@@ -6,10 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -29,9 +31,23 @@ public class Main extends Application {
     private MenuItem lineButton;
 
     @FXML
+    private MenuItem playX2;
+
+    @FXML
+    private MenuItem playX3;
+
+    @FXML
     private Canvas canvas;
 
-    int turno = 0;
+    int turno = 0, velocidade = 1;
+    boolean done = false, desenhado = false;
+
+    public void PlayX2() {
+        velocidade = 2;
+    }
+    public void PlayX3() {
+        velocidade = 3;
+    }
 
     public String[] fileChooser() {
         FileChooser fileChooser = new FileChooser();
@@ -266,7 +282,19 @@ public class Main extends Application {
         //-----------------------------------------------------------------------------------
     }
     public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int turno) {
-        gc.fillText(Integer.toString(turno), 650, 325);
+        //atualiza texto turno
+        if(!desenhado) {
+            gc.clearRect(0,550,250,50);
+            gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
+            desenhado = true;
+        }
+        else {
+            gc.clearRect(0,550,250,50);
+            gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
+            desenhado = false;
+        }
+
+        //atualiza fila guichê
     }
 
     public void setUsers(Usuarios[] usuarios, String[] arrayLine) {
@@ -299,6 +327,9 @@ public class Main extends Application {
             usuarios[linha].precisaIr = arrayLine[linha].substring(countUltimo, arrayLine[linha].length());
         }
     }
+    public void updateFila(Usuarios[] usuarios) {
+
+    }
 
     public void gameLoop(GraphicsContext graphicsContext) {
         String[] fileSetup = SetupButton();
@@ -313,11 +344,14 @@ public class Main extends Application {
         Usuarios[] usuarios = new Usuarios[fileLine.length];
         setUsers(usuarios, fileLine);
 
-        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(() -> {
-            updateGuiches(guiches, graphicsContext, turno);
-            turno++;
-        }, 0, 1, TimeUnit.SECONDS);
+        //while(!done) {
+            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+            exec.scheduleAtFixedRate(() -> {
+                updateGuiches(guiches, graphicsContext, turno);
+                turno++;
+                updateFila(usuarios);
+            }, 0, 1, TimeUnit.SECONDS);
+        //}
     }
 
     @Override
@@ -329,7 +363,7 @@ public class Main extends Application {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         StackPane root = loader.load();
-        root.getChildren().add(canvas);
+        root.getChildren().addAll(canvas);
         primaryStage.setTitle("Project San Francisco");
         primaryStage.setScene(new Scene(root, 1300, 680));
         primaryStage.setResizable(false);
@@ -338,7 +372,6 @@ public class Main extends Application {
 
         gameLoop(graphicsContext);
     }
-
     public static void main(String[] args) throws IOException {
         launch(args);
     }

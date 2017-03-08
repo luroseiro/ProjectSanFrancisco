@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
@@ -9,9 +11,9 @@
    <children>
       <HBox>
          <children>
-            <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1300.0" HBox.hgrow="ALWAYS">
+            <MenuBar prefHeight="25.0" prefWidth="1300.0" HBox.hgrow="ALWAYS">
                <menus>
-                  <Menu fx:id="menu" mnemonicParsing="false" text="Arquivo">
+                  <Menu mnemonicParsing="false" text="Arquivo">
                      <items>
                         <MenuItem fx:id="setupButton" mnemonicParsing="false" onAction="#SetupButton" text="Carregar setup..." />
                         <MenuItem fx:id="lineButton" mnemonicParsing="false" onAction="#LineButton" text="Carregar fila..." />
@@ -19,11 +21,11 @@
                   </Menu>
                   <Menu mnemonicParsing="false" text="Controles">
                      <items>
-                        <MenuItem mnemonicParsing="false" text="Play" />
-                        <MenuItem mnemonicParsing="false" text="Play x2" />
-                        <MenuItem mnemonicParsing="false" text="Play x3" />
-                        <MenuItem mnemonicParsing="false" text="Pause" />
-                        <MenuItem mnemonicParsing="false" text="Reset" />
+                        <MenuItem fx:id="play" mnemonicParsing="false" text="Play" />
+                        <MenuItem fx:id="playX2" mnemonicParsing="false" onAction="#PlayX2" text="Play x2" />
+                        <MenuItem fx:id="playX3" mnemonicParsing="false" onAction="#PlayX3" text="Play x3" />
+                        <MenuItem fx:id="pause" mnemonicParsing="false" text="Pause" />
+                        <MenuItem fx:id="reset" mnemonicParsing="false" text="Reset" />
                      </items>
                   </Menu>
                </menus>
