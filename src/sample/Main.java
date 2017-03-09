@@ -39,9 +39,9 @@ public class Main extends Application {
     @FXML
     private Canvas canvas;
 
-    int turno = 0, velocidade = 1, primeiroUsuario = 0, primeiroGuiche = 0;
+    int turno = 0, velocidade = 1;
     int tipoGuiche = 0, qtdeGuiche = 0;
-    boolean done = false, desenhado = false;
+    boolean done = false, desenhado = false, controle = false;
 
     public void PlayX2() {
         velocidade = 2;
@@ -307,7 +307,7 @@ public class Main extends Application {
         //atualiza fila guichê
     }
 
-    public void setUsers(Usuarios[] usuarios, String[] arrayLine, Guiches[] guiches) {
+    public void setUsers(Usuarios[] usuarios, String[] arrayLine) {
         int countUltimo = 1, countPrimeiro;
 
         for(int linha = 0; linha < arrayLine.length; linha++) {
@@ -340,7 +340,7 @@ public class Main extends Application {
             usuarios[linha].ultimoNecessario = arrayLine[linha].charAt(arrayLine[linha].length() - 1);
         }
     }
-    public void updateFila(Usuarios[] usuarios, Guiches[] guiches, String[] arrayLine) {
+    public void updateFila(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
         for(int i = 0; i < usuarios.length; i++) {
             if (usuarios[i].chegada == turno) {
                 usuarios[i].turnosNecessarios += 1 + guiches[0].custo;
@@ -348,65 +348,57 @@ public class Main extends Application {
             }
         }
 
-        System.out.println("turno: " + turno);
-        atendeUsuario(usuarios, guiches, arrayLine);
-        System.out.println(usuarios[3].sendoAtendido);
-
+        atendeUsuario(usuarios, guiches, fileLine);
     }
 
-    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches, String[] arrayLine) {
-        int count = 0, proximo = 1;
-        for(int i = primeiroGuiche; i < tipoGuiche; i++) {
-            again:
-            for(int auxUsuario = primeiroUsuario; auxUsuario < usuarios.length; auxUsuario++) {
-                if(usuarios[auxUsuario].precisaIr == null) {
-                    primeiroUsuario++;
-                    break again;
-                }
-                if (guiches[i].fila > 0) {
-                    if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
-                        if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
-                            guiches[i].usuariosSendoAtendidos++;
-                            guiches[i].ordemSendoAtendido = usuarios[auxUsuario].userOrdem;
-                            if (usuarios[auxUsuario].turnosNecessarios >= 1) {
-                                usuarios[auxUsuario].turnosNecessarios--;
-                                usuarios[auxUsuario].sendoAtendido = true;
+    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
+        int count = 0, proximo = 1, contaFinal = 0;
+        for(int i = 0; i < tipoGuiche; i++) {
+            for(int auxUsuario = 0; auxUsuario < usuarios.length; auxUsuario++) {
+                if(usuarios[auxUsuario].turnosNecessarios != -1) {
+                    if (guiches[i].fila > 0) {
+                        if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
+                            if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
+                                guiches[i].usuariosSendoAtendidos++;
+                                guiches[i].ordemSendoAtendido = usuarios[auxUsuario].userOrdem;
+                                if (usuarios[auxUsuario].turnosNecessarios >= 1) {
+                                    usuarios[auxUsuario].turnosNecessarios--;
+                                    usuarios[auxUsuario].sendoAtendido = true;
+                                }
                             }
-                        }
-                    }
-                    else if(guiches[i].usuariosSendoAtendidos == guiches[i].atendentes) {
-                        if(usuarios[auxUsuario].sendoAtendido && guiches[i].tipo == usuarios[auxUsuario].precisaIr.charAt(0)) {
-                            if (usuarios[auxUsuario].turnosNecessarios >= 1) {
-                                usuarios[auxUsuario].turnosNecessarios--;
-                            }
-                            else if (usuarios[auxUsuario].turnosNecessarios == 0) {
-                                if(usuarios[auxUsuario].precisaIr.charAt(0) != usuarios[auxUsuario].ultimoNecessario) {
-                                    usuarios[auxUsuario].precisaIr = usuarios[auxUsuario].precisaIr.substring(1);
-                                }
-                                else {
-                                    usuarios[auxUsuario].precisaIr = null;
-                                    System.out.println("removido: " + usuarios[auxUsuario].userOrdem);
-                                }
-                                guiches[i].usuariosSendoAtendidos--;
-                                guiches[i].fila--;
-                                usuarios[auxUsuario].sendoAtendido = false;
-                                if(usuarios[auxUsuario].precisaIr == null) {
-                                    primeiroUsuario++;
-                                }
-                                else if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[proximo].tipo) {
-                                    usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
-                                    guiches[proximo].fila++;
-                                }
-                                else {
-                                    while (usuarios[auxUsuario].precisaIr.charAt(0) != guiches[proximo].tipo) {
-                                        proximo++;
-                                        count++;
+                        } else if (guiches[i].usuariosSendoAtendidos == guiches[i].atendentes) {
+                            if (usuarios[auxUsuario].sendoAtendido && guiches[i].tipo == usuarios[auxUsuario].precisaIr.charAt(0)) {
+                                if (usuarios[auxUsuario].turnosNecessarios >= 1) {
+                                    usuarios[auxUsuario].turnosNecessarios--;
+                                } else if (usuarios[auxUsuario].turnosNecessarios == 0) {
+                                    guiches[i].usuariosSendoAtendidos--;
+                                    guiches[i].fila--;
+                                    usuarios[auxUsuario].sendoAtendido = false;
+
+                                    if (usuarios[auxUsuario].precisaIr.charAt(0) != usuarios[auxUsuario].ultimoNecessario) {
+                                        usuarios[auxUsuario].precisaIr = usuarios[auxUsuario].precisaIr.substring(1);
+                                    } else {
+                                        usuarios[auxUsuario].precisaIr = null;
                                     }
-                                    usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
-                                    guiches[proximo].fila++;
-                                    while (count > 0) {
-                                        proximo--;
-                                        count--;
+
+                                    if (usuarios[auxUsuario].precisaIr == null) {
+                                        usuarios[auxUsuario].turnosNecessarios = -1;
+                                    } else {
+                                        if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[proximo].tipo) {
+                                            usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
+                                            guiches[proximo].fila++;
+                                        } else {
+                                            while (usuarios[auxUsuario].precisaIr.charAt(0) != guiches[proximo].tipo) {
+                                                proximo++;
+                                                count++;
+                                            }
+                                            usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
+                                            guiches[proximo].fila++;
+                                            while (count > 0) {
+                                                proximo--;
+                                                count--;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -414,6 +406,14 @@ public class Main extends Application {
                     }
                 }
             }
+        }
+        for(int i = 0; i < usuarios.length; i++) {
+            if(usuarios[i].turnosNecessarios == -1) {
+                contaFinal++;
+            }
+        }
+        if(contaFinal == usuarios.length) {
+            done = true;
         }
     }
 
@@ -428,16 +428,16 @@ public class Main extends Application {
 
         String[] fileLine = LineButton();
         Usuarios[] usuarios = new Usuarios[fileLine.length];
-        setUsers(usuarios, fileLine, guiches);
+        setUsers(usuarios, fileLine);
 
-        //while(!done) {
-            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-            exec.scheduleAtFixedRate(() -> {
-                updateGuiches(guiches, graphicsContext, qtdeGuiche);
-                updateFila(usuarios, guiches, fileLine);
-                turno++;
-            }, 0, 50, TimeUnit.MILLISECONDS);
-        //}
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(() -> {
+            updateGuiches(guiches, graphicsContext, qtdeGuiche);
+            updateFila(usuarios, guiches, fileLine);
+            turno++;
+            /*if(done)
+                throw new RuntimeException("Fim!");*/
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
