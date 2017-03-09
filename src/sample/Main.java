@@ -340,7 +340,7 @@ public class Main extends Application {
             usuarios[linha].ultimoNecessario = arrayLine[linha].charAt(arrayLine[linha].length() - 1);
         }
     }
-    public void updateFila(Usuarios[] usuarios, Guiches[] guiches) {
+    public void updateFila(Usuarios[] usuarios, Guiches[] guiches, String[] arrayLine) {
         for(int i = 0; i < usuarios.length; i++) {
             if (usuarios[i].chegada == turno) {
                 usuarios[i].turnosNecessarios += 1 + guiches[0].custo;
@@ -349,15 +349,20 @@ public class Main extends Application {
         }
 
         System.out.println("turno: " + turno);
-        atendeUsuario(usuarios, guiches);
-        System.out.println(guiches[0].fila);
+        atendeUsuario(usuarios, guiches, arrayLine);
+        System.out.println(usuarios[3].sendoAtendido);
 
     }
 
-    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
+    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches, String[] arrayLine) {
         int count = 0, proximo = 1;
         for(int i = primeiroGuiche; i < tipoGuiche; i++) {
+            again:
             for(int auxUsuario = primeiroUsuario; auxUsuario < usuarios.length; auxUsuario++) {
+                if(usuarios[auxUsuario].precisaIr == null) {
+                    primeiroUsuario++;
+                    break again;
+                }
                 if (guiches[i].fila > 0) {
                     if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
                         if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
@@ -380,6 +385,7 @@ public class Main extends Application {
                                 }
                                 else {
                                     usuarios[auxUsuario].precisaIr = null;
+                                    System.out.println("removido: " + usuarios[auxUsuario].userOrdem);
                                 }
                                 guiches[i].usuariosSendoAtendidos--;
                                 guiches[i].fila--;
@@ -428,9 +434,9 @@ public class Main extends Application {
             ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
             exec.scheduleAtFixedRate(() -> {
                 updateGuiches(guiches, graphicsContext, qtdeGuiche);
-                updateFila(usuarios, guiches);
+                updateFila(usuarios, guiches, fileLine);
                 turno++;
-            }, 0, 500, TimeUnit.MILLISECONDS);
+            }, 0, 50, TimeUnit.MILLISECONDS);
         //}
     }
 
