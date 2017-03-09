@@ -39,7 +39,8 @@ public class Main extends Application {
     @FXML
     private Canvas canvas;
 
-    int turno = 0, velocidade = 1;
+    int turno = 0, velocidade = 1, primeiroUsuario = 0, primeiroGuiche = 0;
+    int tipoGuiche = 0, qtdeGuiche = 0;
     boolean done = false, desenhado = false;
 
     public void PlayX2() {
@@ -79,9 +80,8 @@ public class Main extends Application {
         return file;
     }
 
-    public int contaGuiches(Guiches[] guiches, char ultimoGuiche, String arraySetup) {
+    public void contaGuiches(Guiches[] guiches, char ultimoGuiche, String arraySetup) {
         //conta guiches de cada tipo
-        int tipoGuiche = 0, qtdeGuiche = 0;
         for(char j = 'A'; j <= ultimoGuiche; j++) {
             guiches[tipoGuiche] = new Guiches();
             for (int i = 3; i < arraySetup.length(); i++) {
@@ -92,8 +92,6 @@ public class Main extends Application {
             tipoGuiche++;
             qtdeGuiche++;
         }
-
-        return qtdeGuiche;
     }
     public void setGuiches(String[] arraySetup, Guiches[] guiches, char ultimoGuiche, char ultimoAtendente) {
         //define custo e rotulo
@@ -281,23 +279,35 @@ public class Main extends Application {
         }
         //-----------------------------------------------------------------------------------
     }
-    public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int turno) {
+    public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiches) {
         //atualiza texto turno
-        if(!desenhado) {
-            gc.clearRect(0,550,250,50);
-            gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
-            desenhado = true;
+        if(maxGuiches <= 11) {
+            if (!desenhado) {
+                gc.clearRect(0, 550, 250, 50);
+                gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
+                desenhado = true;
+            } else {
+                gc.clearRect(0, 550, 250, 50);
+                gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
+                desenhado = false;
+            }
         }
         else {
-            gc.clearRect(0,550,250,50);
-            gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
-            desenhado = false;
+            if (!desenhado) {
+                gc.clearRect(0, 245, 250, 50);
+                gc.fillText("Turno: " + Integer.toString(turno), 100, 295);
+                desenhado = true;
+            } else {
+                gc.clearRect(0, 245, 250, 50);
+                gc.fillText("Turno: " + Integer.toString(turno), 100, 295);
+                desenhado = false;
+            }
         }
 
         //atualiza fila guichê
     }
 
-    public void setUsers(Usuarios[] usuarios, String[] arrayLine) {
+    public void setUsers(Usuarios[] usuarios, String[] arrayLine, Guiches[] guiches) {
         int countUltimo = 1, countPrimeiro;
 
         for(int linha = 0; linha < arrayLine.length; linha++) {
@@ -325,10 +335,80 @@ public class Main extends Application {
 
             //define precisaIr
             usuarios[linha].precisaIr = arrayLine[linha].substring(countUltimo, arrayLine[linha].length());
+
+            //define ultimoNecessario
+            usuarios[linha].ultimoNecessario = arrayLine[linha].charAt(arrayLine[linha].length() - 1);
         }
     }
-    public void updateFila(Usuarios[] usuarios) {
+    public void updateFila(Usuarios[] usuarios, Guiches[] guiches) {
+        for(int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i].chegada == turno) {
+                usuarios[i].turnosNecessarios += 1 + guiches[0].custo;
+                guiches[0].fila++;
+            }
+        }
 
+        System.out.println("turno: " + turno);
+        atendeUsuario(usuarios, guiches);
+        System.out.println(guiches[0].fila);
+
+    }
+
+    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
+        int count = 0, proximo = 1;
+        for(int i = primeiroGuiche; i < tipoGuiche; i++) {
+            for(int auxUsuario = primeiroUsuario; auxUsuario < usuarios.length; auxUsuario++) {
+                if (guiches[i].fila > 0) {
+                    if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
+                        if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
+                            guiches[i].usuariosSendoAtendidos++;
+                            guiches[i].ordemSendoAtendido = usuarios[auxUsuario].userOrdem;
+                            if (usuarios[auxUsuario].turnosNecessarios >= 1) {
+                                usuarios[auxUsuario].turnosNecessarios--;
+                                usuarios[auxUsuario].sendoAtendido = true;
+                            }
+                        }
+                    }
+                    else if(guiches[i].usuariosSendoAtendidos == guiches[i].atendentes) {
+                        if(usuarios[auxUsuario].sendoAtendido && guiches[i].tipo == usuarios[auxUsuario].precisaIr.charAt(0)) {
+                            if (usuarios[auxUsuario].turnosNecessarios >= 1) {
+                                usuarios[auxUsuario].turnosNecessarios--;
+                            }
+                            else if (usuarios[auxUsuario].turnosNecessarios == 0) {
+                                if(usuarios[auxUsuario].precisaIr.charAt(0) != usuarios[auxUsuario].ultimoNecessario) {
+                                    usuarios[auxUsuario].precisaIr = usuarios[auxUsuario].precisaIr.substring(1);
+                                }
+                                else {
+                                    usuarios[auxUsuario].precisaIr = null;
+                                }
+                                guiches[i].usuariosSendoAtendidos--;
+                                guiches[i].fila--;
+                                usuarios[auxUsuario].sendoAtendido = false;
+                                if(usuarios[auxUsuario].precisaIr == null) {
+                                    primeiroUsuario++;
+                                }
+                                else if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[proximo].tipo) {
+                                    usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
+                                    guiches[proximo].fila++;
+                                }
+                                else {
+                                    while (usuarios[auxUsuario].precisaIr.charAt(0) != guiches[proximo].tipo) {
+                                        proximo++;
+                                        count++;
+                                    }
+                                    usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
+                                    guiches[proximo].fila++;
+                                    while (count > 0) {
+                                        proximo--;
+                                        count--;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void gameLoop(GraphicsContext graphicsContext) {
@@ -336,21 +416,21 @@ public class Main extends Application {
         Guiches[] guiches = new Guiches[fileSetup[1].length() - 3];
         char ultimoGuiche = fileSetup[1].charAt(fileSetup[1].length() - 1);
         char ultimoAtendente = fileSetup[2].charAt(fileSetup[2].length() - 1);
-        int qtdeGuiches = contaGuiches(guiches, ultimoGuiche, fileSetup[1]);
+        contaGuiches(guiches, ultimoGuiche, fileSetup[1]);
         setGuiches(fileSetup, guiches, ultimoGuiche, ultimoAtendente);
-        drawGuiches(guiches, graphicsContext, qtdeGuiches);
+        drawGuiches(guiches, graphicsContext, qtdeGuiche);
 
         String[] fileLine = LineButton();
         Usuarios[] usuarios = new Usuarios[fileLine.length];
-        setUsers(usuarios, fileLine);
+        setUsers(usuarios, fileLine, guiches);
 
         //while(!done) {
             ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
             exec.scheduleAtFixedRate(() -> {
-                updateGuiches(guiches, graphicsContext, turno);
+                updateGuiches(guiches, graphicsContext, qtdeGuiche);
+                updateFila(usuarios, guiches);
                 turno++;
-                updateFila(usuarios);
-            }, 0, 1, TimeUnit.SECONDS);
+            }, 0, 500, TimeUnit.MILLISECONDS);
         //}
     }
 
