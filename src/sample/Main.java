@@ -156,7 +156,7 @@ public class Main extends Application {
                 gc.setFill(Color.BLACK);
                 gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 30, maxWidth);
                 gc.setFont(Font.font(13));
-                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 7, maxWidth);
+                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - 7, maxWidth);
                 gc.setFont(Font.font(40));
                 gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 55, maxWidth);
             }
@@ -249,7 +249,7 @@ public class Main extends Application {
                     gc.setFill(Color.BLACK);
                     gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 485, maxWidth);
                     gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 462, maxWidth);
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 508, maxWidth);
                     gc.setFont(Font.font(40));
                     gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 85 * (guiches[grupoGuiche].quantidade - 1), 575, maxWidth);
 
@@ -267,7 +267,7 @@ public class Main extends Application {
                     gc.setFont(Font.font(20));
                     gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + 42.5, 485, maxWidth);
                     gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + 42.5, 462, maxWidth);
+                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + 42.5, 508, maxWidth);
                     gc.setFont((Font.font(40)));
                     gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 42.5, 575, maxWidth);
 
@@ -281,30 +281,15 @@ public class Main extends Application {
     }
     public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiches) {
         //atualiza texto turno
-        if(maxGuiches <= 11) {
-            if (!desenhado) {
-                gc.clearRect(0, 550, 250, 50);
-                gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
-                desenhado = true;
-            } else {
-                gc.clearRect(0, 550, 250, 50);
-                gc.fillText("Turno: " + Integer.toString(turno), 100, 600);
-                desenhado = false;
-            }
+        if (!desenhado) {
+            gc.clearRect(1100, 0, 250, 50);
+            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
+            desenhado = true;
+        } else {
+            gc.clearRect(1100, 0, 250, 50);
+            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
+            desenhado = false;
         }
-        else {
-            if (!desenhado) {
-                gc.clearRect(0, 245, 250, 50);
-                gc.fillText("Turno: " + Integer.toString(turno), 100, 295);
-                desenhado = true;
-            } else {
-                gc.clearRect(0, 245, 250, 50);
-                gc.fillText("Turno: " + Integer.toString(turno), 100, 295);
-                desenhado = false;
-            }
-        }
-
-        //atualiza fila guichê
     }
 
     public void setUsers(Usuarios[] usuarios, String[] arrayLine) {
@@ -355,7 +340,7 @@ public class Main extends Application {
         int count = 0, proximo = 1, contaFinal = 0;
         for(int i = 0; i < tipoGuiche; i++) {
             for(int auxUsuario = 0; auxUsuario < usuarios.length; auxUsuario++) {
-                if(usuarios[auxUsuario].turnosNecessarios != -1) {
+                if(usuarios[auxUsuario].turnosNecessarios != -2) {
                     if (guiches[i].fila > 0) {
                         if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
                             if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
@@ -382,7 +367,7 @@ public class Main extends Application {
                                     }
 
                                     if (usuarios[auxUsuario].precisaIr == null) {
-                                        usuarios[auxUsuario].turnosNecessarios = -1;
+                                        usuarios[auxUsuario].turnosNecessarios = -2;
                                     } else {
                                         if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[proximo].tipo) {
                                             usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
@@ -408,7 +393,7 @@ public class Main extends Application {
             }
         }
         for(int i = 0; i < usuarios.length; i++) {
-            if(usuarios[i].turnosNecessarios == -1) {
+            if(usuarios[i].turnosNecessarios == -2) {
                 contaFinal++;
             }
         }
@@ -435,9 +420,9 @@ public class Main extends Application {
             updateGuiches(guiches, graphicsContext, qtdeGuiche);
             updateFila(usuarios, guiches, fileLine);
             turno++;
-            /*if(done)
-                throw new RuntimeException("Fim!");*/
-        }, 0, 1, TimeUnit.SECONDS);
+            if(done)
+                exec.shutdown();
+        }, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
