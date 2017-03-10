@@ -147,6 +147,7 @@ public class Main extends Application {
             for(int i = 0; i < guiches.length; i++) {
                 if(guiches[i].tipo == fila[j].tipoGuicheDaFila) {
                     guiches[i].fila = fila[j];
+                    fila[j].qtdeGuiches++;
                 }
             }
         }
@@ -191,7 +192,7 @@ public class Main extends Application {
     }
 
     //desenha e atualiza guichês
-    public void drawGuiches(Guiches[] guiches, GraphicsContext gc) {
+    public void drawGuiches(Guiches[] guiches, GraphicsContext gc, Fila[] filas) {
 
         //propriedades iniciais do Graphics Context
         gc.setLineWidth(2);
@@ -213,7 +214,7 @@ public class Main extends Application {
                     gc.setFill(Color.LIGHTGREEN);
                 }
 
-                //desenha guichê
+                //desenha guichê e rótulo
                 gc.fillRoundRect(posicaoXProximoCima, 40, 85, 85, 10, 10);
                 gc.setFill(Color.BLACK);
                 gc.fillText(guiches[i].rotulo, posicaoXProximoCima + 42.5, 20, 90);
@@ -242,6 +243,35 @@ public class Main extends Application {
             }
 
         }
+
+        posicaoXProximoCima = 75;
+        posicaoXProximoBaixo = 75;
+        desenhados = 0;
+        //filas
+        for(int j = 0; j < filas.length; j++) {
+            gc.setFill(Color.LIGHTGRAY);
+            //desenha fila
+            if(desenhados < filas.length / 2 - 1) {
+                if (filas[j].qtdeGuiches > 1) {
+                    gc.fillRoundRect(posicaoXProximoCima + 67.5, 135, 50, 175, 10, 10);
+                    posicaoXProximoCima += 100 * filas[j].qtdeGuiches;
+                    desenhados++;
+                } else {
+                    gc.fillRoundRect(posicaoXProximoCima + 17.5, 135, 50, 175, 10, 10);
+                    posicaoXProximoCima += 100;
+                    desenhados++;
+                }
+            }
+            else {
+                if (filas[j].qtdeGuiches > 1) {
+                    gc.fillRoundRect(posicaoXProximoBaixo + 67.5, 325, 50, 175, 10, 10);
+                    posicaoXProximoBaixo += 100 * filas[j].qtdeGuiches;
+                } else {
+                    gc.fillRoundRect(posicaoXProximoBaixo + 17.5, 325, 50, 175, 10, 10);
+                    posicaoXProximoBaixo += 100;
+                }
+            }
+        }
     }
     public void updateGuiches(Guiches[] guiches, GraphicsContext gc) {
 
@@ -251,6 +281,7 @@ public class Main extends Application {
         //atualiza texto turno
         if (!desenhado) {
             gc.clearRect(1100, 0, 250, 50);
+            gc.setFill(Color.BLACK);
             gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
             desenhado = true;
         } else {
@@ -297,11 +328,13 @@ public class Main extends Application {
                         if (!usuarios[j].sendoAtendido) {
                             //verifica se o guichê está atendendo
                             if (!guiches[i].atendendo) {
-                                if (usuarios[j].precisaIr.charAt(0) == guiches[i].tipo) {
-                                    usuarios[j].sendoAtendido = true;
-                                    usuarios[j].turnosNecessarios--;
-                                    usuarios[j].qualGuicheSendoAtendido = i;
-                                    guiches[i].atendendo = true;
+                                if(guiches[i].atendente) {
+                                    if (usuarios[j].precisaIr.charAt(0) == guiches[i].tipo) {
+                                        usuarios[j].sendoAtendido = true;
+                                        usuarios[j].turnosNecessarios--;
+                                        usuarios[j].qualGuicheSendoAtendido = i;
+                                        guiches[i].atendendo = true;
+                                    }
                                 }
                             }
                         }
@@ -398,7 +431,7 @@ public class Main extends Application {
         setGuiches(fileSetup, guiches, fila);
 
         //desenha guichês
-        drawGuiches(guiches, graphicsContext);
+        drawGuiches(guiches, graphicsContext, fila);
 
         //cria arquivo fila e usuários
         String[] fileLine = LineButton();
