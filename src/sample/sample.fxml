@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
@@ -21,7 +19,7 @@
                   </Menu>
                   <Menu mnemonicParsing="false" text="Controles">
                      <items>
-                        <MenuItem fx:id="play" mnemonicParsing="false" text="Play" />
+                        <MenuItem fx:id="playX1" mnemonicParsing="false" onAction="#PlayX1" text="Play" />
                         <MenuItem fx:id="playX2" mnemonicParsing="false" onAction="#PlayX2" text="Play x2" />
                         <MenuItem fx:id="playX3" mnemonicParsing="false" onAction="#PlayX3" text="Play x3" />
                         <MenuItem fx:id="pause" mnemonicParsing="false" text="Pause" />

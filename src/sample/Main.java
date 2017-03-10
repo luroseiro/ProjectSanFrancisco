@@ -6,21 +6,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Main extends Application {
 
@@ -31,6 +27,9 @@ public class Main extends Application {
     private MenuItem lineButton;
 
     @FXML
+    private MenuItem playX1;
+
+    @FXML
     private MenuItem playX2;
 
     @FXML
@@ -39,15 +38,17 @@ public class Main extends Application {
     @FXML
     private Canvas canvas;
 
-    int turno = 0, velocidade = 1;
-    int tipoGuiche = 0, qtdeGuiche = 0;
-    boolean done = false, desenhado = false, controle = false;
+    int turno = 0, tipoGuiche = 0, qtdeGuiche = 0;
+    boolean done = false, desenhado = false;
 
+    public void PlayX1() {
+
+    }
     public void PlayX2() {
-        velocidade = 2;
+
     }
     public void PlayX3() {
-        velocidade = 3;
+
     }
 
     public String[] fileChooser() {
@@ -422,7 +423,7 @@ public class Main extends Application {
             turno++;
             if(done)
                 exec.shutdown();
-        }, 0, 100, TimeUnit.MILLISECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
