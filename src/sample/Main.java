@@ -250,25 +250,40 @@ public class Main extends Application {
         //filas
         for(int j = 0; j < filas.length; j++) {
             gc.setFill(Color.LIGHTGRAY);
-            //desenha fila
-            if(desenhados < filas.length / 2 - 1) {
+            //desenha fila em cima
+            if(filas.length <= 10) {
                 if (filas[j].qtdeGuiches > 1) {
                     gc.fillRoundRect(posicaoXProximoCima + 67.5, 135, 50, 175, 10, 10);
                     posicaoXProximoCima += 100 * filas[j].qtdeGuiches;
-                    desenhados++;
                 } else {
                     gc.fillRoundRect(posicaoXProximoCima + 17.5, 135, 50, 175, 10, 10);
                     posicaoXProximoCima += 100;
-                    desenhados++;
                 }
             }
+            //verifica onde desenhar
             else {
-                if (filas[j].qtdeGuiches > 1) {
-                    gc.fillRoundRect(posicaoXProximoBaixo + 67.5, 325, 50, 175, 10, 10);
-                    posicaoXProximoBaixo += 100 * filas[j].qtdeGuiches;
-                } else {
-                    gc.fillRoundRect(posicaoXProximoBaixo + 17.5, 325, 50, 175, 10, 10);
-                    posicaoXProximoBaixo += 100;
+                //desenha em cima
+                if (desenhados < filas.length / 2 - 1) {
+                    if (filas[j].qtdeGuiches > 1) {
+                        gc.fillRoundRect(posicaoXProximoCima + 67.5, 135, 50, 175, 10, 10);
+                        posicaoXProximoCima += 100 * filas[j].qtdeGuiches;
+                        desenhados++;
+                    } else {
+                        gc.fillRoundRect(posicaoXProximoCima + 17.5, 135, 50, 175, 10, 10);
+                        posicaoXProximoCima += 100;
+                        desenhados++;
+                    }
+
+                }
+                //desenha embaixo
+                else {
+                    if (filas[j].qtdeGuiches > 1) {
+                        gc.fillRoundRect(posicaoXProximoBaixo + 67.5, 325, 50, 175, 10, 10);
+                        posicaoXProximoBaixo += 100 * filas[j].qtdeGuiches;
+                    } else {
+                        gc.fillRoundRect(posicaoXProximoBaixo + 17.5, 325, 50, 175, 10, 10);
+                        posicaoXProximoBaixo += 100;
+                    }
                 }
             }
         }
