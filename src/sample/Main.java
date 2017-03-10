@@ -20,37 +20,27 @@ import java.util.concurrent.*;
 
 public class Main extends Application {
 
+    //botões FXML
     @FXML
     private MenuItem setupButton;
-
     @FXML
     private MenuItem lineButton;
-
     @FXML
     private MenuItem playX1;
-
     @FXML
     private MenuItem playX2;
-
     @FXML
     private MenuItem playX3;
 
+    //tela para ser desenhada
     @FXML
     private Canvas canvas;
 
+    //controle de fluxo e outros
     int turno = 0, tipoGuiche = 0, qtdeGuiche = 0;
     boolean done = false, desenhado = false;
 
-    public void PlayX1() {
-
-    }
-    public void PlayX2() {
-
-    }
-    public void PlayX3() {
-
-    }
-
+    //explorador de arquivos
     public String[] fileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("C:\\Users\\lf_ro\\Downloads"));
@@ -72,230 +62,84 @@ public class Main extends Application {
         }
     }
 
+    //ação dos botões
     public String[] SetupButton() {
+
         String[] file = fileChooser();
         return file;
+
     }
     public String[] LineButton() {
+
         String[] file = fileChooser();
         return file;
+
+    }
+    public void PlayX1() {
+
+    }
+    public void PlayX2() {
+
+    }
+    public void PlayX3() {
+
     }
 
-    public void contaGuiches(Guiches[] guiches, char ultimoGuiche, String arraySetup) {
-        //conta guiches de cada tipo
-        for(char j = 'A'; j <= ultimoGuiche; j++) {
-            guiches[tipoGuiche] = new Guiches();
-            for (int i = 3; i < arraySetup.length(); i++) {
-                if (arraySetup.charAt(i) == j) {
-                    guiches[tipoGuiche].quantidade++;
-                }
-            }
-            tipoGuiche++;
-            qtdeGuiche++;
+    //propriedades dos guichês e usuários
+    public void contaGuiches(Guiches[] guiches, char ultimoGuiche) {
+
+        //cria guiches
+        for(int i = 0; i < guiches.length; i++) {
+            guiches[i] = new Guiches();
         }
+
+        //define ultimo tipo de guiche
+        for(char j = 'A'; j <= ultimoGuiche; j++) {
+            tipoGuiche++;
+        }
+
     }
     public void setGuiches(String[] arraySetup, Guiches[] guiches, char ultimoGuiche, char ultimoAtendente) {
-        //define custo e rotulo
-        int posGuiche = 0;
-        for(int i = 4; i < arraySetup.length; i++) {
-            guiches[posGuiche].custo = Character.getNumericValue(arraySetup[i].charAt(1));
-            guiches[posGuiche].rotulo = arraySetup[i].substring(3, arraySetup[i].length());
-            posGuiche++;
-        }
-        posGuiche = 0;
 
-        //define tipo
-        for(char type = 'A'; type <= ultimoGuiche; type++) {
-            guiches[posGuiche].tipo = type;
-            posGuiche++;
+        //define tipo dos guiches
+        int auxTipo = 3;
+        //guichês
+        for(int i = 0; i < guiches.length; i++) {
+            guiches[i].tipo = arraySetup[1].charAt(auxTipo);
+            auxTipo++;
+        }
+
+        //define custo e rótulo
+        //linha do arquivo setup
+        for(int i = 4; i < arraySetup.length; i++) {
+            //guichês
+            for(int j = 0; j < guiches.length; j++) {
+                if (guiches[j].tipo == arraySetup[i].charAt(0)) {
+                    guiches[j].custo = Character.getNumericValue(arraySetup[i].charAt(1));
+                    guiches[j].rotulo = arraySetup[i].substring(3, arraySetup[i].length());
+                }
+            }
         }
 
         //define atendentes
-        int aux = 0;
-        for (int atendentes = 3; atendentes < arraySetup[2].length(); atendentes++) {
-            if(guiches[aux].tipo == arraySetup[2].charAt(atendentes)) {
-                guiches[aux].atendentes++;
-                if((arraySetup[2].charAt(atendentes) != ultimoGuiche) && (arraySetup[2].charAt(atendentes) != ultimoAtendente)) {
-                    if (guiches[aux].tipo != arraySetup[2].charAt(atendentes + 1)) {
-                        aux++;
-                    }
+        int auxAtendentes = 3;
+        //guichês
+        for(int i = 0; i < guiches.length; i++) {
+            if(auxAtendentes < arraySetup[2].length()) {
+                if (guiches[i].tipo == arraySetup[2].charAt(auxAtendentes)) {
+                    guiches[i].atendente = true;
+                    auxAtendentes++;
                 }
             }
         }
+
     }
-    public void drawGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiche) {
-        gc.setLineWidth(2);
-        gc.setFont(Font.font("Arial", 20));
-        gc.setTextAlign(TextAlignment.CENTER);
-
-        int posicaoProx = 50, posicaoProxBaixo = 50, desenhados = 0, maxWidth = 90;
-
-        //---------------------------------desenha triagem--------------------------------------
-        if(maxGuiche <= 11) {
-            int posicaoTriagem = 520;
-            if (guiches[0].quantidade > 1) {
-                if(guiches[0].atendentes == 0)
-                    gc.setFill(Color.GRAY);
-                else
-                    gc.setFill(Color.BLUE);
-
-                gc.fillRoundRect(1165, posicaoTriagem - ((guiches[0].quantidade - 1) * 85), 85, guiches[0].quantidade * 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 30, maxWidth);
-                gc.setFont(Font.font(13));
-                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 85) - 7, maxWidth);
-                gc.setFont(Font.font(40));
-                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 15, maxWidth);
-            }
-            else {
-                if(guiches[0].atendentes == 0)
-                    gc.setFill(Color.GRAY);
-                else
-                    gc.setFill(Color.BLUE);
-
-                gc.fillRoundRect(1165, posicaoTriagem, 85, 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 30, maxWidth);
-                gc.setFont(Font.font(13));
-                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - 7, maxWidth);
-                gc.setFont(Font.font(40));
-                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 55, maxWidth);
-            }
-        }
-        else {
-            int posicaoTriagem = 285;
-            if (guiches[0].quantidade > 1) {
-                if(guiches[0].atendentes == 0)
-                    gc.setFill(Color.GRAY);
-                else
-                    gc.setFill(Color.BLUE);
-
-                gc.fillRoundRect(1165, posicaoTriagem - ((guiches[0].quantidade - 1) * 42.5), 85, guiches[0].quantidade * 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - ((guiches[0].quantidade - 1) * 42.5) - 30, maxWidth);
-                gc.setFont(Font.font(13));
-                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - ((guiches[0].quantidade - 1) * 45) - 7, maxWidth);
-                gc.setFont(Font.font(40));
-                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 15, maxWidth);
-            }
-            else {
-                if(guiches[0].atendentes == 0)
-                    gc.setFill(Color.GRAY);
-                else
-                    gc.setFill(Color.BLUE);
-
-                gc.fillRoundRect(1165, posicaoTriagem, 85, 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiches[0].rotulo, 1207.5, posicaoTriagem - 30, maxWidth);
-                gc.setFont(Font.font(13));
-                gc.fillText("Nº de guichês: " + guiches[0].quantidade, 1207.5,posicaoTriagem - 7, maxWidth);
-                gc.setFont(Font.font(40));
-                gc.fillText(Integer.toString(guiches[0].atendentes), 1207.5, posicaoTriagem + 55, maxWidth);
-            }
-        }
-        //-----------------------------------------------------------------------------------
-
-        //--------------------------------desenha outros guiches----------------------------------
-        for (int grupoGuiche = 1; grupoGuiche < maxGuiche; grupoGuiche++) {
-            if(desenhados < 10) {
-                if (guiches[grupoGuiche].quantidade > 1) {
-                    maxWidth *= guiches[0].quantidade;
-                    if(guiches[grupoGuiche].atendentes == 0)
-                        gc.setFill(Color.GRAY);
-                    else
-                        gc.setFill(Color.BLUE);
-
-                    gc.setFont(Font.font(20));
-                    gc.fillRoundRect(posicaoProx, 50, guiches[grupoGuiche].quantidade * 85, 85, 10, 10);
-                    gc.setFill(Color.BLACK);
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + ((guiches[grupoGuiche].quantidade - 1) * 85), 15, maxWidth);
-                    gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProx + ((guiches[grupoGuiche].quantidade - 1) * 85),38, maxWidth);
-                    gc.setFont(Font.font(40));
-                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProx + ((guiches[grupoGuiche].quantidade - 1 )* 85), 105, maxWidth);
-
-                    //controle
-                    desenhados++;
-                    posicaoProx += (guiches[grupoGuiche].quantidade * 85) + 20;
-                } else {
-                    if(guiches[grupoGuiche].atendentes == 0)
-                        gc.setFill(Color.GRAY);
-                    else
-                        gc.setFill(Color.BLUE);
-
-                    gc.fillRoundRect(posicaoProx, 50, 85, 85, 10, 10);
-                    gc.setFill(Color.BLACK);
-                    gc.setFont(Font.font(20));
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProx + 42.5, 15, maxWidth);
-                    gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProx + 42.5, 38, maxWidth);
-                    gc.setFont((Font.font(40)));
-                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProx + 42.5, 105, maxWidth);
-
-                    //controle
-                    desenhados++;
-                    posicaoProx += 100;
-                }
-            }
-            else {
-                if (guiches[grupoGuiche].quantidade > 1) {
-                    maxWidth *= guiches[grupoGuiche].quantidade;
-                    if(guiches[grupoGuiche].atendentes == 0)
-                        gc.setFill(Color.GRAY);
-                    else
-                        gc.setFill(Color.BLUE);
-
-                    gc.setFont(Font.font(20));
-                    gc.fillRoundRect(posicaoProxBaixo, 520, guiches[grupoGuiche].quantidade * 85, 85, 10, 10);
-                    gc.setFill(Color.BLACK);
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 485, maxWidth);
-                    gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + ((guiches[grupoGuiche].quantidade - 1) * 85), 508, maxWidth);
-                    gc.setFont(Font.font(40));
-                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 85 * (guiches[grupoGuiche].quantidade - 1), 575, maxWidth);
-
-                    //controle
-                    desenhados++;
-                    posicaoProxBaixo += (guiches[grupoGuiche].quantidade * 85) + 20;
-                } else {
-                    if(guiches[grupoGuiche].atendentes == 0)
-                        gc.setFill(Color.GRAY);
-                    else
-                        gc.setFill(Color.BLUE);
-
-                    gc.fillRoundRect(posicaoProxBaixo, 520, 85, 85, 10, 10);
-                    gc.setFill(Color.BLACK);
-                    gc.setFont(Font.font(20));
-                    gc.fillText(guiches[grupoGuiche].rotulo, posicaoProxBaixo + 42.5, 485, maxWidth);
-                    gc.setFont(Font.font(13));
-                    gc.fillText("Nº de guichês: " + guiches[grupoGuiche].quantidade, posicaoProxBaixo + 42.5, 508, maxWidth);
-                    gc.setFont((Font.font(40)));
-                    gc.fillText(Integer.toString(guiches[grupoGuiche].atendentes), posicaoProxBaixo + 42.5, 575, maxWidth);
-
-                    //controle
-                    desenhados++;
-                    posicaoProxBaixo += 100;
-                }
-            }
-        }
-        //-----------------------------------------------------------------------------------
-    }
-    public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiches) {
-        //atualiza texto turno
-        if (!desenhado) {
-            gc.clearRect(1100, 0, 250, 50);
-            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
-            desenhado = true;
-        } else {
-            gc.clearRect(1100, 0, 250, 50);
-            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
-            desenhado = false;
-        }
-    }
-
     public void setUsers(Usuarios[] usuarios, String[] arrayLine) {
+
+        //controle de usuários
         int countUltimo = 1, countPrimeiro;
 
+        //linha do arquivo fila (usuário)
         for(int linha = 0; linha < arrayLine.length; linha++) {
             //define userOrdem
             usuarios[linha] = new Usuarios();
@@ -325,8 +169,84 @@ public class Main extends Application {
             //define ultimoNecessario
             usuarios[linha].ultimoNecessario = arrayLine[linha].charAt(arrayLine[linha].length() - 1);
         }
+
     }
+
+    //desenha e atualiza guichês
+    public void drawGuiches(Guiches[] guiches, GraphicsContext gc) {
+
+        //propriedades iniciais do Graphics Context
+        gc.setLineWidth(2);
+        gc.setFont(Font.font("Arial", 20));
+        gc.setTextAlign(TextAlignment.CENTER);
+
+        //controle de posicionamento
+        int posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
+
+        //guichês
+        for(int i = 0; i < guiches.length; i++) {
+            //desenha em cima
+            if(desenhados < 10) {
+                //verifica atendente e defina pintura
+                if(!guiches[i].atendente) {
+                    gc.setFill(Color.BLACK);
+                }
+                else {
+                    gc.setFill(Color.LIGHTGREEN);
+                }
+
+                //desenha guichê
+                gc.fillRoundRect(posicaoXProximoCima, 40, 85, 85, 10, 10);
+                gc.setFill(Color.BLACK);
+                gc.fillText(guiches[i].rotulo, posicaoXProximoCima + 42.5, 20, 90);
+
+                //controle de posicionamento superior
+                desenhados++;
+                posicaoXProximoCima += 100;
+            }
+            //desenha embaixo
+            else {
+                //verifica atendente e defina pintura
+                if(!guiches[i].atendente) {
+                    gc.setFill(Color.BLACK);
+                }
+                else {
+                    gc.setFill(Color.LIGHTGREEN);
+                }
+
+                //desenha guichê
+                gc.fillRoundRect(posicaoXProximoBaixo, 510, 85, 85, 10, 10);
+                gc.setFill(Color.BLACK);
+                gc.fillText(guiches[i].rotulo, posicaoXProximoBaixo + 42.5, 625, 90);
+
+                //controle de posicionamento inferior
+                posicaoXProximoBaixo += 100;
+            }
+
+        }
+    }
+    public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiches) {
+
+        //tamanho do texto de turno
+        gc.setFont(Font.font(40));
+
+        //atualiza texto turno
+        if (!desenhado) {
+            gc.clearRect(1100, 0, 250, 50);
+            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
+            desenhado = true;
+        } else {
+            gc.clearRect(1100, 0, 250, 50);
+            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
+            desenhado = false;
+        }
+
+    }
+
+    //atualiza fila
     public void updateFila(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
+
+        //atualiza usuário para fila da triagem
         for(int i = 0; i < usuarios.length; i++) {
             if (usuarios[i].chegada == turno) {
                 usuarios[i].turnosNecessarios += 1 + guiches[0].custo;
@@ -334,11 +254,14 @@ public class Main extends Application {
             }
         }
 
+        //atualiza usuário para outros guichês
         atendeUsuario(usuarios, guiches, fileLine);
-    }
 
+    }
     public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
-        int count = 0, proximo = 1, contaFinal = 0;
+
+    }
+        /*int count = 0, proximo = 1, contaFinal = 0;
         for(int i = 0; i < tipoGuiche; i++) {
             for(int auxUsuario = 0; auxUsuario < usuarios.length; auxUsuario++) {
                 if(usuarios[auxUsuario].turnosNecessarios != -2) {
@@ -401,33 +324,54 @@ public class Main extends Application {
         if(contaFinal == usuarios.length) {
             done = true;
         }
-    }
+    }*/
 
+    //método principal do simulador
     public void gameLoop(GraphicsContext graphicsContext) {
+
+        //cria arquivo de setup e guiches
         String[] fileSetup = SetupButton();
         Guiches[] guiches = new Guiches[fileSetup[1].length() - 3];
+        qtdeGuiche = guiches.length;
+
+        //cria ultimo tipo de guiche e onde está o ultimo atendente
         char ultimoGuiche = fileSetup[1].charAt(fileSetup[1].length() - 1);
         char ultimoAtendente = fileSetup[2].charAt(fileSetup[2].length() - 1);
-        contaGuiches(guiches, ultimoGuiche, fileSetup[1]);
-        setGuiches(fileSetup, guiches, ultimoGuiche, ultimoAtendente);
-        drawGuiches(guiches, graphicsContext, qtdeGuiche);
 
+        //propriedades iniciais dos guiches
+        contaGuiches(guiches, ultimoGuiche);
+        setGuiches(fileSetup, guiches, ultimoGuiche, ultimoAtendente);
+
+        //desenha guichês
+        drawGuiches(guiches, graphicsContext);
+
+        //cria arquivo fila e usuários
         String[] fileLine = LineButton();
         Usuarios[] usuarios = new Usuarios[fileLine.length];
+
+        //propriedades iniciais dos usuarios
         setUsers(usuarios, fileLine);
 
+        //loop de processamento de fila
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(() -> {
+            //atualiza guichês, fila e turno
             updateGuiches(guiches, graphicsContext, qtdeGuiche);
             updateFila(usuarios, guiches, fileLine);
             turno++;
-            if(done)
+
+            //encerra processamento após fim da fila
+            if(done) {
                 exec.shutdown();
+            }
         }, 0, 1, TimeUnit.SECONDS);
+
     }
 
+    //métodos básicos JAVAFX
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("sample.fxml"));
 
@@ -442,9 +386,12 @@ public class Main extends Application {
 
         primaryStage.show();
 
+        //roda simulador
         gameLoop(graphicsContext);
+
     }
     public static void main(String[] args) throws IOException {
         launch(args);
     }
+
 }
