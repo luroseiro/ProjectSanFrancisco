@@ -99,7 +99,7 @@ public class Main extends Application {
         }
 
     }
-    public void setGuiches(String[] arraySetup, Guiches[] guiches, char ultimoGuiche, char ultimoAtendente) {
+    public void setGuiches(String[] arraySetup, Guiches[] guiches, Fila[] fila) {
 
         //define tipo dos guiches
         int auxTipo = 3;
@@ -129,6 +129,24 @@ public class Main extends Application {
                 if (guiches[i].tipo == arraySetup[2].charAt(auxAtendentes)) {
                     guiches[i].atendente = true;
                     auxAtendentes++;
+                }
+            }
+        }
+
+        //define filas
+        char tipoFila = 'A';
+        for (int i = 0; i < fila.length; i++) {
+            fila[i].tipoGuicheDaFila = tipoFila;
+            tipoFila++;
+        }
+
+        //atribui cada guichê pra uma fila
+        //fila
+        for (int j = 0; j < fila.length; j++) {
+            //guichê
+            for(int i = 0; i < guiches.length; i++) {
+                if(guiches[i].tipo == fila[j].tipoGuicheDaFila) {
+                    guiches[i].fila = fila[j];
                 }
             }
         }
@@ -225,7 +243,7 @@ public class Main extends Application {
 
         }
     }
-    public void updateGuiches(Guiches[] guiches, GraphicsContext gc, int maxGuiches) {
+    public void updateGuiches(Guiches[] guiches, GraphicsContext gc) {
 
         //tamanho do texto de turno
         gc.setFont(Font.font(40));
@@ -244,69 +262,94 @@ public class Main extends Application {
     }
 
     //atualiza fila
-    public void updateFila(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
+    public void updateFila(Usuarios[] usuarios, Guiches[] guiches) {
 
+        int auxGuiche = 0;
         //atualiza usuário para fila da triagem
         for(int i = 0; i < usuarios.length; i++) {
-            if (usuarios[i].chegada == turno) {
-                usuarios[i].turnosNecessarios += 1 + guiches[0].custo;
-                guiches[0].fila++;
+            if(usuarios[i].chegada == turno) {
+                if(guiches[auxGuiche].tipo == 'A') {
+                    guiches[auxGuiche].fila.tamanhoFila++;
+                    usuarios[i].turnosNecessarios += guiches[auxGuiche].custo + 1;
+                    auxGuiche++;
+                }
             }
         }
 
         //atualiza usuário para outros guichês
-        atendeUsuario(usuarios, guiches, fileLine);
+        atendeUsuario(usuarios, guiches);
 
     }
-    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches, String[] fileLine) {
+    public void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
 
-    }
-        /*int count = 0, proximo = 1, contaFinal = 0;
-        for(int i = 0; i < tipoGuiche; i++) {
-            for(int auxUsuario = 0; auxUsuario < usuarios.length; auxUsuario++) {
-                if(usuarios[auxUsuario].turnosNecessarios != -2) {
-                    if (guiches[i].fila > 0) {
-                        if (guiches[i].usuariosSendoAtendidos < guiches[i].atendentes) {
-                            if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[i].tipo) {
-                                guiches[i].usuariosSendoAtendidos++;
-                                guiches[i].ordemSendoAtendido = usuarios[auxUsuario].userOrdem;
-                                if (usuarios[auxUsuario].turnosNecessarios >= 1) {
-                                    usuarios[auxUsuario].turnosNecessarios--;
-                                    usuarios[auxUsuario].sendoAtendido = true;
+        //controle de fluxo
+        int proximoGuiche = 1, count = 0, contaFinal = 0;
+
+        //guichês
+        for(int i = 0; i < guiches.length; i++) {
+            //verifica se guichê tem fila
+            if(guiches[i].fila.tamanhoFila > 0) {
+                //usuários
+                for (int j = 0; j < usuarios.length; j++) {
+                    //verifica se o usuário foi embora
+                    if(usuarios[j].turnosNecessarios != -2) {
+                        //verifica se usuário está sendo atendido
+                        if (!usuarios[j].sendoAtendido) {
+                            //verifica se o guichê está atendendo
+                            if (!guiches[i].atendendo) {
+                                if (usuarios[j].precisaIr.charAt(0) == guiches[i].tipo) {
+                                    usuarios[j].sendoAtendido = true;
+                                    usuarios[j].turnosNecessarios--;
+                                    usuarios[j].qualGuicheSendoAtendido = i;
+                                    guiches[i].atendendo = true;
                                 }
                             }
-                        } else if (guiches[i].usuariosSendoAtendidos == guiches[i].atendentes) {
-                            if (usuarios[auxUsuario].sendoAtendido && guiches[i].tipo == usuarios[auxUsuario].precisaIr.charAt(0)) {
-                                if (usuarios[auxUsuario].turnosNecessarios >= 1) {
-                                    usuarios[auxUsuario].turnosNecessarios--;
-                                } else if (usuarios[auxUsuario].turnosNecessarios == 0) {
-                                    guiches[i].usuariosSendoAtendidos--;
-                                    guiches[i].fila--;
-                                    usuarios[auxUsuario].sendoAtendido = false;
+                        }
+                        //se usuário estiver sendo atendido
+                        else {
+                            //verifica se o loop está no guichê que ele está sendo atendido
+                            if (usuarios[j].qualGuicheSendoAtendido == i) {
+                                //verifica quantos turnos faltam pra mudar de guichê
+                                if (usuarios[j].turnosNecessarios >= 1) {
+                                    usuarios[j].turnosNecessarios--;
+                                }
+                                //se faltar 0
+                                else if (usuarios[j].turnosNecessarios == 0) {
+                                    guiches[i].atendendo = false;
+                                    guiches[i].fila.tamanhoFila--;
+                                    usuarios[j].sendoAtendido = false;
 
-                                    if (usuarios[auxUsuario].precisaIr.charAt(0) != usuarios[auxUsuario].ultimoNecessario) {
-                                        usuarios[auxUsuario].precisaIr = usuarios[auxUsuario].precisaIr.substring(1);
-                                    } else {
-                                        usuarios[auxUsuario].precisaIr = null;
+                                    //se estiver no último guichê define precisaIr = null
+                                    if (usuarios[j].precisaIr.charAt(0) == usuarios[j].ultimoNecessario) {
+                                        usuarios[j].precisaIr = null;
+                                    }
+                                    //define proximo guichê para usuário
+                                    else {
+                                        usuarios[j].precisaIr = usuarios[j].precisaIr.substring(1);
                                     }
 
-                                    if (usuarios[auxUsuario].precisaIr == null) {
-                                        usuarios[auxUsuario].turnosNecessarios = -2;
-                                    } else {
-                                        if (usuarios[auxUsuario].precisaIr.charAt(0) == guiches[proximo].tipo) {
-                                            usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
-                                            guiches[proximo].fila++;
-                                        } else {
-                                            while (usuarios[auxUsuario].precisaIr.charAt(0) != guiches[proximo].tipo) {
-                                                proximo++;
-                                                count++;
-                                            }
-                                            usuarios[auxUsuario].turnosNecessarios += guiches[proximo].custo;
-                                            guiches[proximo].fila++;
-                                            while (count > 0) {
-                                                proximo--;
-                                                count--;
-                                            }
+                                    //usuário acabou
+                                    if (usuarios[j].precisaIr == null) {
+                                        usuarios[j].turnosNecessarios = -2;
+                                    }
+                                    //se o próximo guichê que ele precisa ir for o próximo do loop
+                                    else if (usuarios[j].precisaIr.charAt(0) == guiches[proximoGuiche].tipo) {
+                                        usuarios[j].turnosNecessarios += guiches[proximoGuiche].custo;
+                                        guiches[proximoGuiche].fila.tamanhoFila++;
+                                    }
+                                    else {
+                                        //avança próximo guichê até o que for necessário
+                                        while (usuarios[j].precisaIr.charAt(0) != guiches[proximoGuiche].tipo) {
+                                            proximoGuiche++;
+                                            count++;
+                                        }
+                                        usuarios[j].turnosNecessarios += guiches[proximoGuiche].custo;
+                                        guiches[proximoGuiche].fila.tamanhoFila++;
+
+                                        //volta próximo guichê para o inicial
+                                        while (count > 0) {
+                                            proximoGuiche--;
+                                            count--;
                                         }
                                     }
                                 }
@@ -316,31 +359,43 @@ public class Main extends Application {
                 }
             }
         }
+
+        //verifica se todos os usuários foram embora
         for(int i = 0; i < usuarios.length; i++) {
             if(usuarios[i].turnosNecessarios == -2) {
                 contaFinal++;
             }
         }
+
+        //encerra o loop
         if(contaFinal == usuarios.length) {
             done = true;
         }
-    }*/
+
+    }
 
     //método principal do simulador
     public void gameLoop(GraphicsContext graphicsContext) {
 
-        //cria arquivo de setup e guiches
+        //cria arquivo de setup e guichês
         String[] fileSetup = SetupButton();
         Guiches[] guiches = new Guiches[fileSetup[1].length() - 3];
         qtdeGuiche = guiches.length;
 
-        //cria ultimo tipo de guiche e onde está o ultimo atendente
+        //cria ultimo tipo de guichê
         char ultimoGuiche = fileSetup[1].charAt(fileSetup[1].length() - 1);
-        char ultimoAtendente = fileSetup[2].charAt(fileSetup[2].length() - 1);
 
         //propriedades iniciais dos guiches
         contaGuiches(guiches, ultimoGuiche);
-        setGuiches(fileSetup, guiches, ultimoGuiche, ultimoAtendente);
+
+        //cria e inicia filas
+        Fila[] fila = new Fila[tipoGuiche];
+        for(int i = 0; i < tipoGuiche; i++) {
+            fila[i] = new Fila();
+        }
+
+        //define guichês e suas filas
+        setGuiches(fileSetup, guiches, fila);
 
         //desenha guichês
         drawGuiches(guiches, graphicsContext);
@@ -356,15 +411,15 @@ public class Main extends Application {
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(() -> {
             //atualiza guichês, fila e turno
-            updateGuiches(guiches, graphicsContext, qtdeGuiche);
-            updateFila(usuarios, guiches, fileLine);
+            updateGuiches(guiches, graphicsContext);
+            updateFila(usuarios, guiches);
             turno++;
 
             //encerra processamento após fim da fila
             if(done) {
                 exec.shutdown();
             }
-        }, 0, 1, TimeUnit.SECONDS);
+        }, 0, 100, TimeUnit.MILLISECONDS);
 
     }
 

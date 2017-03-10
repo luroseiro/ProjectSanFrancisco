@@ -10,6 +10,7 @@ public class Usuarios {
     String precisaIr;
 
     //atendimento
+    int qualGuicheSendoAtendido;
     boolean sendoAtendido = false;
 
 }

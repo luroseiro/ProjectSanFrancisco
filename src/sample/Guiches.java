@@ -9,8 +9,7 @@ public class Guiches {
     char tipo;
 
     //atendimento
-    int fila = 0;
-    int usuariosSendoAtendidos = 0;
-    int ordemSendoAtendido;
+    Fila fila;
+    boolean atendendo = false;
 
 }
