@@ -470,11 +470,9 @@ public class Main extends Application {
                 contaFinal++;
             }
         }
-
         //encerra o loop
         if(contaFinal == usuarios.length) {
             done = true;
-            fila[fila.length - 1].tamanhoFila--;
         }
 
     }
@@ -516,8 +514,8 @@ public class Main extends Application {
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(() -> {
             //atualiza guichês, fila e turno
-            updateGuiches(guiches, fila, graphicsContext);
             updateFila(usuarios, guiches, fila);
+            updateGuiches(guiches, fila, graphicsContext);
             turno++;
 
             //encerra processamento após fim da fila
