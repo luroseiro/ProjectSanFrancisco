@@ -526,7 +526,7 @@ public class Main extends Application {
 
     }
 
-    //métodos básicos JAVAFX
+    //métodos básicos JavaFX
     @Override
     public void start(Stage primaryStage) throws Exception {
 
