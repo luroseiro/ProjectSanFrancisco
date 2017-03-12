@@ -3,38 +3,43 @@ package sample;
 import java.io.*;
 
 public class ReadFile {
-    private String path;
 
-    public ReadFile(String filePath) {
-        path = filePath;
+    private String caminho;
+
+    public ReadFile(String caminhoArquivo) {
+        caminho = caminhoArquivo;
     }
 
-    public String[] OpenFile() throws IOException {
-        BufferedReader textReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "ISO-8859-1"));
+    public String[] abreArquivo() throws IOException {
+        BufferedReader leitorTexto = new BufferedReader(new InputStreamReader(new FileInputStream(caminho), "ISO-8859-1"));
 
-        int numberLines = readLines();
-        String[] textData = new String[numberLines];
+        int linhas = linhasLidas();
+        String[] dadosTexto = new String[linhas];
 
-        for (int i = 0; i < numberLines; i++) {
-            textData[i] = textReader.readLine();
+        for (int i = 0; i < linhas; i++) {
+            dadosTexto[i] = leitorTexto.readLine();
         }
 
-        textReader.close();
-        return textData;
+        leitorTexto.close();
+        return dadosTexto;
+
     }
 
-    int readLines() throws IOException {
-        FileReader fileToRead = new FileReader(path);
-        BufferedReader bF = new BufferedReader(fileToRead);
+    private int linhasLidas() throws IOException {
 
-        String aLine;
-        int numberLines = 0;
+        FileReader arquivoParaLer = new FileReader(caminho);
+        BufferedReader leitorArquivo = new BufferedReader(arquivoParaLer);
 
-        while ((aLine = bF.readLine()) != null) {
-            numberLines++;
+        String arrayLinha;
+        int linhas = 0;
+
+        while ((arrayLinha = leitorArquivo.readLine()) != null) {
+            linhas++;
         }
-        bF.close();
+        leitorArquivo.close();
 
-        return numberLines;
+        return linhas;
+
     }
+
 }

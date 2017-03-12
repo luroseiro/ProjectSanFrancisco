@@ -45,7 +45,7 @@ public class Main extends Application {
 
         try {
             ReadFile arquivo = new ReadFile(caminho);
-            arrayArquivo = arquivo.OpenFile();
+            arrayArquivo = arquivo.abreArquivo();
             return arrayArquivo;
         } catch (IOException e) {
             System.out.println("Erro ao ler arquivo!");
