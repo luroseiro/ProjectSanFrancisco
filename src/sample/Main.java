@@ -79,7 +79,6 @@ public class Main extends Application {
 
     }
     public void PlayX2() {
-
     }
     public void PlayX3() {
 
@@ -183,7 +182,7 @@ public class Main extends Application {
 
     }
 
-    //desenha e atualiza guichês
+    //desenha e atualiza guichês, atualiza fila
     private void drawGuiches(Guiches[] guiches, GraphicsContext gc, Fila[] filas) {
 
         //propriedades iniciais do Graphics Context
@@ -304,17 +303,17 @@ public class Main extends Application {
         int posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
 
         for(Fila j: filas) {
-            gc.setFill(Color.GRAY);
+            gc.setFill(Color.LIGHTGRAY);
             //desenha fila em cima
             if (filas.length <= 10) {
                 if (j.qtdeGuiches > 1) {
-                    gc.fillRoundRect(posicaoXProximoCima + 72.5,140,40,165,10,10);
+                    gc.fillRoundRect(posicaoXProximoCima + 69,136,47,173,10,10);
                     gc.setFont(Font.font(40));
                     gc.setFill(Color.BLACK);
                     gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoCima + 92.5,180,50);
                     posicaoXProximoCima += 100 * j.qtdeGuiches;
                 } else {
-                    gc.fillRoundRect(posicaoXProximoCima + 22.5,140,40,165,10,10);
+                    gc.fillRoundRect(posicaoXProximoCima + 19,136,47,173,10,10);
                     gc.setFont(Font.font(40));
                     gc.setFill(Color.BLACK);
                     gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoCima + 42.5,180,50);
@@ -326,14 +325,14 @@ public class Main extends Application {
                 //desenha em cima
                 if (desenhados < filas.length / 2 - 1) {
                     if (j.qtdeGuiches > 1) {
-                        gc.fillRoundRect(posicaoXProximoCima + 72.5,140, 40,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoCima + 69,136, 47,173,10,10);
                         gc.setFont(Font.font(40));
                         gc.setFill(Color.BLACK);
                         gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoCima + 92.5,180,50);
                         posicaoXProximoCima += 100 * j.qtdeGuiches;
                         desenhados++;
                     } else {
-                        gc.fillRoundRect(posicaoXProximoCima + 22.5,140,40,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoCima + 19,136,47,173,10,10);
                         gc.setFont(Font.font(40));
                         gc.setFill(Color.BLACK);
                         gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoCima + 42.5,180,50);
@@ -345,13 +344,13 @@ public class Main extends Application {
                 //desenha embaixo
                 else {
                     if (j.qtdeGuiches > 1) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 72.5,330,40,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoBaixo + 69,326,47,173,10,10);
                         gc.setFont(Font.font(40));
                         gc.setFill(Color.BLACK);
                         gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoBaixo + 92.5,480,50);
                         posicaoXProximoBaixo += 100 * j.qtdeGuiches;
                     } else {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 22.5,330,40,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoBaixo + 19,326,47,173,10,10);
                         gc.setFont(Font.font(40));
                         gc.setFill(Color.BLACK);
                         gc.fillText(Integer.toString(j.tamanhoFila), posicaoXProximoBaixo + 42.5,480,50);
@@ -362,8 +361,6 @@ public class Main extends Application {
         }
 
     }
-
-    //atualiza fila
     private void updateFila(Usuarios[] usuarios, Guiches[] guiches, Fila[] fila) {
 
         int auxGuiche = 0;
@@ -521,8 +518,9 @@ public class Main extends Application {
             //encerra processamento após fim da fila
             if (done) {
                 exec.shutdown();
+                graphicsContext.fillText("Fim!",1250,100);
             }
-        }, 0, 100, TimeUnit.MILLISECONDS);
+        }, 0, 500, TimeUnit.MILLISECONDS);
 
     }
 
