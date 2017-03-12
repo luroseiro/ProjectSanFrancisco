@@ -26,9 +26,15 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    //botão de velocidade
-    private ComboBox<Duration> comboVelocidade = new ComboBox<>();
-    private ComboBox<String> comboPause = new ComboBox<>();
+    //velocidade
+    private Button botaoVelocidade1 = new Button("Velocidade: x1");
+    private Button botaoVelocidade2 = new Button("Velocidade: x2");
+    private Button botaoVelocidade3 = new Button("Velocidade: x3");
+
+    //play, pause e reset
+    private Button botaoPlay = new Button("Play");
+    private Button botaoPause = new Button("Pause");
+    private Button botaoReset = new Button("Reset");
 
     //controle de fluxo e outros
     private int turno = 0, tipoGuiche = 0;
@@ -513,23 +519,18 @@ public class Main extends Application {
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
 
-        //muda velocidade
-        comboVelocidade.valueProperty().addListener((observable, oldValue, newValue) -> timeline.setRate(1/newValue.toSeconds()));
+        //velocidades
+        botaoVelocidade1.setOnAction(e -> timeline.setRate(1));
+        botaoVelocidade2.setOnAction(e -> timeline.setRate(2));
+        botaoVelocidade3.setOnAction(e -> timeline.setRate(3));
 
-        //pause e play
-        comboPause.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            switch (newValue) {
-                case "Pause":
-                    timeline.pause();
-                    break;
-                case "Play":
-                    timeline.play();
-                    break;
-                case "Reset":
-
-                    break;
-            }
-        }));
+        //play, pause e reset
+        botaoPlay.setOnAction(e -> timeline.play());
+        botaoPause.setOnAction(e -> timeline.pause());
+        botaoReset.setOnAction(e -> {
+            timeline.stop();
+            //começar do zero
+        });
 
         //roda simulador
         timeline.play();
@@ -542,8 +543,7 @@ public class Main extends Application {
 
         //layout
         StackPane root = new StackPane();
-        VBox vBox = new VBox();
-        vBox.setSpacing(10);
+        VBox vBox = new VBox(10);
 
         //barra de menu
         MenuBar menuBar = new MenuBar();
@@ -555,23 +555,14 @@ public class Main extends Application {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         //empilhando
-        vBox.getChildren().addAll(menuBar,canvas);
+        vBox.getChildren().addAll(menuBar, canvas);
 
-        //botões de controle
-        Duration initial = Duration.seconds(1);
-        comboVelocidade.getItems().addAll(initial, Duration.seconds(1/2d), Duration.seconds(1/3d));
-        comboVelocidade.setValue(initial);
-        comboPause.getItems().addAll("Play", "Pause", "Reset");
-        comboPause.setPromptText("Play");
-
-        //ajustando botões de controle
-        HBox hBox = new HBox();
-        hBox.setMinWidth(1300);
-        hBox.setMinHeight(25);
-        hBox.setSpacing(10);
-        hBox.getChildren().addAll(comboPause, comboVelocidade);
-
-        StackPane.setAlignment(hBox, Pos.TOP_LEFT);
+        //ajustando botões de controle de fluxo
+        HBox hBox = new HBox(1);
+        botaoPlay.setMinWidth(50);
+        botaoPause.setMinWidth(50);
+        botaoReset.setMinWidth(50);
+        hBox.getChildren().addAll(botaoVelocidade1, botaoVelocidade2, botaoVelocidade3, botaoPlay, botaoPause, botaoReset);
 
         //adicionando a raiz e propriedades
         root.getChildren().addAll(vBox, hBox);
