@@ -74,7 +74,10 @@ public class Main extends Application {
         }
 
     }
-    private void defineGuiches(String[] arquivoSetup, Guiches[] guiches, Fila[] filas) {
+    private void defineGuiches(String[] arquivoSetup, Guiches[] guiches, Fila[] filas, Troca troca) {
+
+        //define custo da troca
+        troca.setCusto(Character.getNumericValue(arquivoSetup[3].charAt(6)));
 
         //define tipo dos guiches
         int auxTipo = 3, auxAtendentes = 3;
@@ -468,6 +471,7 @@ public class Main extends Application {
 
         //cria arquivo de setup e guichês
         String[] arquivoSetup = carregarArquivo();
+        Troca troca = new Troca();
         Guiches[] guiches = new Guiches[arquivoSetup[1].length() - 3];
 
         //cria ultimo tipo de guichê
@@ -483,7 +487,7 @@ public class Main extends Application {
         }
 
         //define guichês e suas filas
-        defineGuiches(arquivoSetup, guiches, filas);
+        defineGuiches(arquivoSetup, guiches, filas, troca);
 
         //desenha guichês
         desenhaGuiches(guiches, graphicsContext, filas);
