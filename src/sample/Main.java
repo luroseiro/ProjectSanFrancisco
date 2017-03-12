@@ -4,14 +4,12 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -129,22 +127,20 @@ public class Main extends Application {
         for(int linha = 0; linha < arrayLine.length; linha++) {
             //define userOrdem
             usuarios[linha] = new Usuarios();
-            contagem:
             for(int i = 1; i < arrayLine[linha].length(); i++) {
                 if(arrayLine[linha].charAt(i) == 'C') {
                     countUltimo = i;
-                    break contagem;
+                    break;
                 }
             }
             usuarios[linha].setUserOrdem(Integer.parseInt(arrayLine[linha].substring(1, countUltimo)));
 
             //define chegada
             countPrimeiro = countUltimo + 1;
-            contagem2:
             for(int i = countPrimeiro; i < arrayLine[linha].length(); i++) {
                 if(arrayLine[linha].charAt(i) == 'A') {
                     countUltimo = i;
-                    break contagem2;
+                    break;
                 }
             }
             usuarios[linha].setChegada(Integer.parseInt(arrayLine[linha].substring(countPrimeiro, countUltimo)));
@@ -490,14 +486,16 @@ public class Main extends Application {
 
         //pause e play
         comboPause.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            if(newValue.equals("Pause")) {
-                timeline.pause();
-            }
-            else if(newValue.equals("Play")){
-                timeline.play();
-            }
-            else if (newValue.equals("Reset")){
+            switch (newValue) {
+                case "Pause":
+                    timeline.pause();
+                    break;
+                case "Play":
+                    timeline.play();
+                    break;
+                case "Reset":
 
+                    break;
             }
         }));
 
