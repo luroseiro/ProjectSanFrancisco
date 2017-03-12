@@ -5,12 +5,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
@@ -28,7 +27,8 @@ import java.io.IOException;
 public class Main extends Application {
 
     //botão de velocidade
-    ToggleButton botao = new ToggleButton();
+    private ComboBox<Duration> comboVelocidade = new ComboBox<>();
+    private ComboBox<String> comboPause = new ComboBox<>();
 
     //controle de fluxo e outros
     private int turno = 0, tipoGuiche = 0;
@@ -55,18 +55,9 @@ public class Main extends Application {
         }
     }
 
-    //ação dos botões
-    private String[] carregarSetup() {
-
-        String[] arquivo = exploradorDeArquivos();
-        return arquivo;
-
-    }
-    private String[] carregarFila() {
-
-        String[] arquivo = exploradorDeArquivos();
-        return arquivo;
-
+    //carregar arquivos
+    private String[] carregarArquivo() {
+        return exploradorDeArquivos();
     }
 
     //propriedades dos guichês e usuários
@@ -452,7 +443,7 @@ public class Main extends Application {
     private void gameLoop(GraphicsContext graphicsContext) {
 
         //cria arquivo de setup e guichês
-        String[] arquivoSetup = carregarSetup();
+        String[] arquivoSetup = carregarArquivo();
         Guiches[] guiches = new Guiches[arquivoSetup[1].length() - 3];
 
         //cria ultimo tipo de guichê
@@ -474,7 +465,7 @@ public class Main extends Application {
         desenhaGuiches(guiches, graphicsContext, filas);
 
         //cria arquivo fila e usuários
-        String[] arquivoFila = carregarFila();
+        String[] arquivoFila = carregarArquivo();
         Usuarios[] usuarios = new Usuarios[arquivoFila.length];
 
         //propriedades iniciais dos usuarios
@@ -495,7 +486,20 @@ public class Main extends Application {
         timeline.setCycleCount(Animation.INDEFINITE);
 
         //muda velocidade
-        timeline.rateProperty().bind(Bindings.when(botao.selectedProperty()).then(5d).otherwise(2d));
+        comboVelocidade.valueProperty().addListener((observable, oldValue, newValue) -> timeline.setRate(1/newValue.toSeconds()));
+
+        //pause e play
+        comboPause.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue.equals("Pause")) {
+                timeline.pause();
+            }
+            else if(newValue.equals("Play")){
+                timeline.play();
+            }
+            else if (newValue.equals("Reset")){
+
+            }
+        }));
 
         //roda simulador
         timeline.play();
@@ -523,18 +527,33 @@ public class Main extends Application {
         //empilhando
         vBox.getChildren().addAll(menuBar,canvas);
 
-        //botão
-        botao.textProperty().bind(Bindings.when(botao.selectedProperty()).then("Velocidade: 5x").otherwise("Velocidade 2x"));
-        StackPane.setAlignment(botao, Pos.TOP_LEFT);
+        //botões de controle
+        Duration initial = Duration.seconds(1);
+        comboVelocidade.getItems().addAll(initial, Duration.seconds(1/2d), Duration.seconds(1/3d));
+        comboVelocidade.setValue(initial);
+        comboPause.getItems().addAll("Play", "Pause", "Reset");
+        comboPause.setPromptText("Play");
+
+        //ajustando botões de controle
+        HBox hBox = new HBox();
+        hBox.setMinWidth(1300);
+        hBox.setMinHeight(25);
+        hBox.setSpacing(10);
+        hBox.getChildren().addAll(comboPause, comboVelocidade);
+
+        StackPane.setAlignment(hBox, Pos.TOP_LEFT);
 
         //adicionando a raiz e propriedades
-        root.getChildren().addAll(vBox, botao);
+        root.getChildren().addAll(vBox, hBox);
         primaryStage.setTitle("Project San Francisco");
         primaryStage.setScene(new Scene(root, 1300, 680));
         primaryStage.setResizable(false);
 
         //exibindo
         primaryStage.show();
+
+        //aviso do carregamento de arquivos
+        AlertaCarregamento.display("AVISO!", "Carregar primeiro arquivo setup, depois arquivo fila!");
 
         //roda simulador
         gameLoop(graphicsContext);
