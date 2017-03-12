@@ -1,58 +1,58 @@
 package sample;
 
-public class Guiches {
+class Guiches {
 
     //tipo
-    char tipo;
-    public char getTipo() {
+    private char tipo;
+    char getTipo() {
         return tipo;
     }
-    public void setTipo(char tipo) {
+    void setTipo(char tipo) {
         this.tipo = tipo;
     }
 
     //atendente
-    boolean atendente;
-    public boolean getAtendente() {
+    private boolean atendente;
+    boolean getAtendente() {
         return atendente;
     }
-    public void setAtendente(boolean atendente) {
-        this.atendente = atendente;
+    void setAtendente() {
+        this.atendente = true;
     }
 
     //custo
-    int custo;
-    public int getCusto() {
+    private int custo;
+    int getCusto() {
         return custo;
     }
-    public void setCusto(int custo) {
+    void setCusto(int custo) {
         this.custo = custo;
     }
 
     //rótulo
-    String rotulo;
-    public String getRotulo() {
+    private String rotulo;
+    String getRotulo() {
         return rotulo;
     }
-    public void setRotulo(String rotulo) {
+    void setRotulo(String rotulo) {
         this.rotulo = rotulo;
     }
 
     //fila
-    Fila fila;
-    public Fila getFila() {
+    private Fila fila;
+    Fila getFila() {
         return fila;
     }
-    public void setFila(Fila fila) {
+    void setFila(Fila fila) {
         this.fila = fila;
     }
 
     //atendendo
-    boolean atendendo = false;
-    public boolean getAtendendo() {
+    private boolean atendendo = false;
+    boolean getAtendendo() {
         return atendendo;
     }
-    public void setAtendendo(boolean atendendo) {
+    void setAtendendo(boolean atendendo) {
         this.atendendo = atendendo;
     }
 

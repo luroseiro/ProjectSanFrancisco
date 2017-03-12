@@ -2,15 +2,15 @@ package sample;
 
 import java.io.*;
 
-public class ReadFile {
+class ReadFile {
 
     private String caminho;
 
-    public ReadFile(String caminhoArquivo) {
+    ReadFile(String caminhoArquivo) {
         caminho = caminhoArquivo;
     }
 
-    public String[] abreArquivo() throws IOException {
+    String[] abreArquivo() throws IOException {
         BufferedReader leitorTexto = new BufferedReader(new InputStreamReader(new FileInputStream(caminho), "ISO-8859-1"));
 
         int linhas = linhasLidas();

@@ -1,73 +1,61 @@
 package sample;
 
-public class Usuarios {
-
-    //ordem de chegada
-    int userOrdem = 0;
-    public int getUserOrdem() {
-        return userOrdem;
-    }
-    public void setUserOrdem(int userOrdem) {
-        this.userOrdem = userOrdem;
-    }
+class Usuarios {
 
     //chegada
-    int chegada;
-    public int getChegada() {
+    private int chegada;
+    int getChegada() {
         return chegada;
     }
-    public void setChegada(int chegada) {
+    void setChegada(int chegada) {
         this.chegada = chegada;
     }
 
     //onde usuário precisa ir
-    String precisaIr;
-    public String getPrecisaIr() {
+    private String precisaIr;
+    String getPrecisaIr() {
         return precisaIr;
     }
-    public void setPrecisaIr(String precisaIr) {
+    void setPrecisaIr(String precisaIr) {
         this.precisaIr = precisaIr;
     }
 
     //último guichê necessário para usuário
-    char ultimoNecessario;
-    public char getUltimoNecessario() {
+    private char ultimoNecessario;
+    char getUltimoNecessario() {
         return ultimoNecessario;
     }
-    public void setUltimoNecessario(char ultimoNecessario) {
+    void setUltimoNecessario(char ultimoNecessario) {
         this.ultimoNecessario = ultimoNecessario;
     }
 
     //turnos necessários para o usuário
-    int turnosNecessarios = -1;
-    public int getTurnosNecessarios() {
+    private int turnosNecessarios = -1;
+    int getTurnosNecessarios() {
         return turnosNecessarios;
     }
-    public void setTurnosNecessarios(int turnosNecessarios) {
+    void setTurnosNecessarios(int turnosNecessarios) {
         this.turnosNecessarios += turnosNecessarios;
     }
-    public void aumentaNecessarios() {
-        this.turnosNecessarios++;
-    }
-    public void diminuiTurnosNecessarios() {
+    void diminuiTurnosNecessarios() {
         this.turnosNecessarios--;
     }
 
     //sendo atendido
-    boolean sendoAtendido = false;
-    public boolean getSendoAtendido() {
+    private boolean sendoAtendido = false;
+    boolean getSendoAtendido() {
         return sendoAtendido;
     }
-    public void setSendoAtendido(boolean sendoAtendido) {
+    void setSendoAtendido(boolean sendoAtendido) {
         this.sendoAtendido = sendoAtendido;
     }
 
     //em qual guichê o usuário está sendo atendido
-    int qualGuicheSendoAtendido;
-    public int getQualGuicheSendoAtendido() {
+    private int qualGuicheSendoAtendido;
+    int getQualGuicheSendoAtendido() {
         return qualGuicheSendoAtendido;
     }
-    public void setQualGuicheSendoAtendido(int qualGuicheSendoAtendido) {
+    void setQualGuicheSendoAtendido(int qualGuicheSendoAtendido) {
         this.qualGuicheSendoAtendido = qualGuicheSendoAtendido;
     }
 

@@ -1,34 +1,34 @@
 package sample;
 
-public class Fila {
+class Fila {
 
     //tipo de guichês para a fila
-    char tipoFila;
-    public char getTipoFila() {
+    private char tipoFila;
+    char getTipoFila() {
         return tipoFila;
     }
-    public void setTipoFila(char tipoFila) {
+    void setTipoFila(char tipoFila) {
         this.tipoFila = tipoFila;
     }
 
     //quantidade de guichês para a fila
-    int qtdeGuiches;
-    public int getQtdeGuiches() {
+    private int qtdeGuiches;
+    int getQtdeGuiches() {
         return qtdeGuiches;
     }
-    public void aumentaQtdeGuiches() {
+    void aumentaQtdeGuiches() {
         this.qtdeGuiches++;
     }
 
     //tamanho da fila
-    int tamanhoFila = 0;
-    public int getTamanhoFila() {
+    private int tamanhoFila = 0;
+    int getTamanhoFila() {
         return tamanhoFila;
     }
-    public void aumentaTamanhoFila() {
+    void aumentaTamanhoFila() {
         this.tamanhoFila++;
     }
-    public void diminuiTamanhoFila() {
+    void diminuiTamanhoFila() {
         this.tamanhoFila--;
     }
 

@@ -8,7 +8,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -84,7 +86,7 @@ public class Main extends Application {
             //define atendentes
             if(auxAtendentes < arquivoSetup[2].length())
                 if (guiche.getTipo() == arquivoSetup[2].charAt(auxAtendentes)) {
-                    guiche.setAtendente(true);
+                    guiche.setAtendente();
                     auxAtendentes++;
                 }
         }
@@ -125,7 +127,7 @@ public class Main extends Application {
 
         //linha do arquivo fila (usuário)
         for(int linha = 0; linha < arrayLine.length; linha++) {
-            //define userOrdem
+            //conta qual caractere começar a linha
             usuarios[linha] = new Usuarios();
             for(int i = 1; i < arrayLine[linha].length(); i++) {
                 if(arrayLine[linha].charAt(i) == 'C') {
@@ -133,7 +135,6 @@ public class Main extends Application {
                     break;
                 }
             }
-            usuarios[linha].setUserOrdem(Integer.parseInt(arrayLine[linha].substring(1, countUltimo)));
 
             //define chegada
             countPrimeiro = countUltimo + 1;
@@ -435,6 +436,33 @@ public class Main extends Application {
 
     }
 
+    //caixa de alerta para carregamento
+    private static void alertaCarregamento() {
+
+        //cria e define caixa de alerta
+        Stage janela = new Stage();
+        janela.setTitle("AVISO!");
+        janela.setMinWidth(350);
+        janela.setMinHeight(150);
+
+        //texto para caixa de aleta e botão
+        Label label = new Label();
+        label.setText("Carregar primeiro arquivo setup, depois arquivo fila!");
+        Button botao = new Button("Ok");
+        botao.setMinWidth(50);
+        botao.setOnAction(e -> janela.close());
+
+        //empilhando
+        VBox vBox = new VBox(25);
+        vBox.getChildren().addAll(label, botao);
+        vBox.setAlignment(Pos.CENTER);
+
+        //Exibe alerta
+        Scene cena = new Scene(vBox);
+        janela.setScene(cena);
+        janela.showAndWait();
+    }
+
     //método principal do simulador
     private void gameLoop(GraphicsContext graphicsContext) {
 
@@ -551,7 +579,7 @@ public class Main extends Application {
         primaryStage.show();
 
         //aviso do carregamento de arquivos
-        AlertaCarregamento.display("AVISO!", "Carregar primeiro arquivo setup, depois arquivo fila!");
+        alertaCarregamento();
 
         //roda simulador
         gameLoop(graphicsContext);
