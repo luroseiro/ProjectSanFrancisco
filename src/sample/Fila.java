@@ -32,4 +32,31 @@ class Fila {
         this.tamanhoFila--;
     }
 
+    //quantidade de usuários que passaram pela fila
+    private double qtdeUsuarios = 0;
+    private double getQtdeUsuarios() {
+        return qtdeUsuarios;
+    }
+    void aumentaQtdeUsuarios() {
+        this.qtdeUsuarios++;
+    }
+
+    //tempo total de espera dos usuários
+    private double tempoTotalEspera = 0;
+    private double getTempoTotalEspera() {
+        return tempoTotalEspera;
+    }
+    void aumentaTempoTotalEspera() {
+        this.tempoTotalEspera ++;
+    }
+
+    //tempo médio de espera dos usuários
+    private double tempoMedioEspera;
+    double getTempoMedioEspera() {
+        return tempoMedioEspera;
+    }
+    void setTempoMedioEspera() {
+        tempoMedioEspera = getTempoTotalEspera() / getQtdeUsuarios();
+    }
+
 }

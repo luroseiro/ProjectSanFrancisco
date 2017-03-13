@@ -2,6 +2,15 @@ package sample;
 
 class Usuarios {
 
+    //define numero de usuário
+    private int numeroUsuario;
+    int getNumeroUsuario() {
+        return numeroUsuario;
+    }
+    void setNumeroUsuario(int numeroUsuario) {
+        this.numeroUsuario = numeroUsuario;
+    }
+
     //chegada
     private int chegada;
     int getChegada() {
@@ -57,6 +66,42 @@ class Usuarios {
     }
     void setQualGuicheSendoAtendido(int qualGuicheSendoAtendido) {
         this.qualGuicheSendoAtendido = qualGuicheSendoAtendido;
+    }
+
+    //turnos totais que o usuário demorou
+    private int turnosTotais = 0;
+    int getTurnosTotais() {
+        return turnosTotais;
+    }
+    void setTurnosTotais(int turnosTotais) {
+        this.turnosTotais = turnosTotais;
+    }
+
+    //verifica se o usuário está numa combinação
+    private boolean estaNumaCombinacao = false;
+    boolean getEstaNumaCombinacao() {
+        return estaNumaCombinacao;
+    }
+    void setEstaNumaCombinacao() {
+        this.estaNumaCombinacao = true;
+    }
+
+    //coloca o usuário em uma combinação
+    private Combinacoes combinacao;
+    Combinacoes getCombinacao() {
+        return combinacao;
+    }
+    void setCombinacao(Combinacoes combinacao) {
+        this.combinacao = combinacao;
+    }
+
+    //verifica se o usuário já foi subtraido da conta de combinação
+    private boolean jaSubtraiu = false;
+    boolean getJaSubtraiu() {
+        return jaSubtraiu;
+    }
+    void setJaSubtraiu() {
+        this.jaSubtraiu = true;
     }
 
 }

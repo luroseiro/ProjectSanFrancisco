@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
@@ -31,13 +30,15 @@ public class Main extends Application {
     private Button botaoVelocidade2 = new Button("Velocidade: x2");
     private Button botaoVelocidade3 = new Button("Velocidade: x3");
 
-    //play, pause e reset
+    //play e pause
     private Button botaoPlay = new Button("Play");
     private Button botaoPause = new Button("Pause");
-    private Button botaoReset = new Button("Reset");
+
+    //para simulação
+    private Button botaoPara = new Button();
 
     //controle de fluxo e outros
-    private int turno = 0, tipoGuiche = 0;
+    private int turno = 0, tipoGuiche = 0, countCombinacao = 0;
     private boolean done = false, desenhadoTurno = false;
 
     //explorador de arquivos
@@ -144,6 +145,7 @@ public class Main extends Application {
                     break;
                 }
             }
+            usuarios[linha].setNumeroUsuario(Integer.parseInt(arrayLine[linha].substring(1, countUltimo)));
 
             //define chegada
             countPrimeiro = countUltimo + 1;
@@ -155,11 +157,46 @@ public class Main extends Application {
             }
             usuarios[linha].setChegada(Integer.parseInt(arrayLine[linha].substring(countPrimeiro, countUltimo)));
 
-            //define precisaIr
+            //define precisaIr e precisavaIr
             usuarios[linha].setPrecisaIr(arrayLine[linha].substring(countUltimo, arrayLine[linha].length()));
 
             //define ultimoNecessario
             usuarios[linha].setUltimoNecessario(arrayLine[linha].charAt(arrayLine[linha].length() - 1));
+        }
+
+    }
+    private void defineCombinacoes(Usuarios[] usuarios, Combinacoes[] combinacoes) {
+
+        //define combinações dos guichês dos usuários
+        int count;
+        for(Usuarios usuario: usuarios) {
+            count = 0;
+            //verifica se todos os usuários já estão numa combinação
+            for(Usuarios auxUsuario: usuarios) {
+                if (auxUsuario.getEstaNumaCombinacao()) {
+                    count++;
+                }
+            }
+            if(count < usuarios.length) {
+                for (Combinacoes combinacao : combinacoes) {
+                    //se a combinação do usuário for a que está no momento
+                    if (usuario.getPrecisaIr().equals(combinacao.getCombinacaoGuiche())) {
+                        combinacao.aumentaQtdeUsuarios();
+                        usuario.setEstaNumaCombinacao();
+                        usuario.setCombinacao(combinacao);
+                        break;
+                    } else {
+                        //se nao for e a combinação atual for null
+                        if (combinacao.getCombinacaoGuiche() == null) {
+                            combinacao.setCombinacaoGuiche(usuario.getPrecisaIr());
+                            combinacao.aumentaQtdeUsuarios();
+                            usuario.setEstaNumaCombinacao();
+                            usuario.setCombinacao(combinacao);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -342,7 +379,9 @@ public class Main extends Application {
             if(usuario.getChegada() == turno) {
                 if(guiches[auxGuiche].getTipo() == 'A') {
                     guiches[auxGuiche].getFila().aumentaTamanhoFila();
+                    guiches[auxGuiche].getFila().aumentaQtdeUsuarios();
                     usuario.setTurnosNecessarios(guiches[auxGuiche].getCusto() + 1);
+                    usuario.setTurnosTotais(guiches[auxGuiche].getCusto());
                     auxGuiche++;
                 }
             }
@@ -365,63 +404,75 @@ public class Main extends Application {
                 for (Usuarios usuario: usuarios) {
                     //verifica se o usuário foi embora
                     if(usuario.getTurnosNecessarios() != -2) {
-                        //verifica se usuário está sendo atendido
-                        if (!usuario.getSendoAtendido()) {
-                            //verifica se o guichê está atendendo
-                            if (!guiches[i].getAtendendo() && guiches[i].getAtendente()) {
-                                if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
-                                    usuario.setSendoAtendido(true);
-                                    usuario.diminuiTurnosNecessarios();
-                                    usuario.setQualGuicheSendoAtendido(i);
-                                    guiches[i].setAtendendo(true);
+                        //verifica se o usuário chegou
+                        if(usuario.getTurnosNecessarios() != -1) {
+                            //verifica se usuário está sendo atendido
+                            if (!usuario.getSendoAtendido()) {
+                                //verifica se o guichê tem atendente
+                                if (guiches[i].getAtendente()) {
+                                    //verifica se o guichê está atendendo
+                                    if (!guiches[i].getAtendendo()) {
+                                        if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                            usuario.setSendoAtendido(true);
+                                            usuario.diminuiTurnosNecessarios();
+                                            usuario.setQualGuicheSendoAtendido(i);
+                                            guiches[i].setAtendendo(true);
+                                        }
+                                    } else {
+                                        guiches[i].getFila().aumentaTempoTotalEspera();
+                                    }
                                 }
                             }
-                        }
-                        //se usuário estiver sendo atendido
-                        else {
-                            //verifica se o loop está no guichê que ele está sendo atendido
-                            if (usuario.getQualGuicheSendoAtendido() == i) {
-                                //verifica quantos turnos faltam pra mudar de guichê
-                                if (usuario.getTurnosNecessarios() >= 1) {
-                                    usuario.diminuiTurnosNecessarios();
-                                }
-                                //se faltar 0
-                                else if (usuario.getTurnosNecessarios() == 0) {
-                                    guiches[i].setAtendendo(false);
-                                    guiches[i].getFila().diminuiTamanhoFila();
-                                    usuario.setSendoAtendido(false);
+                            //se usuário estiver sendo atendido
+                            else {
+                                //verifica se o loop está no guichê que ele está sendo atendido
+                                if (usuario.getQualGuicheSendoAtendido() == i) {
+                                    //verifica quantos turnos faltam pra mudar de guichê
+                                    if (usuario.getTurnosNecessarios() >= 1) {
+                                        usuario.diminuiTurnosNecessarios();
+                                    }
+                                    //se não faltar nenhum turno
+                                    else if (usuario.getTurnosNecessarios() == 0) {
+                                        guiches[i].setAtendendo(false);
+                                        guiches[i].getFila().diminuiTamanhoFila();
+                                        usuario.setSendoAtendido(false);
 
-                                    //se estiver no último guichê define precisaIr = null
-                                    if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
-                                        usuario.setPrecisaIr(null);
-                                    }
-                                    //define proximo guichê para usuário
-                                    else {
-                                        usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
-                                    }
-
-                                    //usuário acabou
-                                    if (usuario.getPrecisaIr() == null) {
-                                        usuario.setTurnosNecessarios(-2);
-                                    }
-                                    //se o próximo guichê que ele precisa ir for o próximo do loop
-                                    else if (usuario.getPrecisaIr().charAt(0) == guiches[proximoGuiche].getTipo()) {
-                                        usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                        guiches[proximoGuiche].getFila().aumentaTamanhoFila();
-                                    }
-                                    else {
-                                        //avança próximo guichê até o que for necessário
-                                        while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
-                                            proximoGuiche++;
-                                            count++;
+                                        //se estiver no último guichê define precisaIr = null
+                                        if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
+                                            usuario.setPrecisaIr(null);
                                         }
-                                        usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                        guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                        //define proximo guichê para usuário
+                                        else {
+                                            usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
+                                        }
 
-                                        //volta próximo guichê para o inicial
-                                        while (count > 0) {
-                                            proximoGuiche--;
-                                            count--;
+                                        //usuário acabou
+                                        if (usuario.getPrecisaIr() == null) {
+                                            usuario.setTurnosNecessarios(-2);
+                                            usuario.setTurnosTotais(turno - usuario.getChegada());
+                                        }
+                                        //se o próximo guichê que ele precisa ir for o próximo do loop
+                                        else if (usuario.getPrecisaIr().charAt(0) == guiches[proximoGuiche].getTipo()) {
+                                            usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
+                                            usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
+                                            guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                            guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+                                        } else {
+                                            //avança próximo guichê até o que for necessário
+                                            while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
+                                                proximoGuiche++;
+                                                count++;
+                                            }
+                                            usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
+                                            usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
+                                            guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                            guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+
+                                            //volta próximo guichê para o inicial
+                                            while (count > 0) {
+                                                proximoGuiche--;
+                                                count--;
+                                            }
                                         }
                                     }
                                 }
@@ -442,6 +493,45 @@ public class Main extends Application {
         if(contaFinal == usuarios.length) {
             done = true;
         }
+
+    }
+
+    //registra informações para arquivo de saída
+    private void infoSaida(Usuarios[] usuarios, Combinacoes[] combinacoes, Fila[] filas) throws IOException {
+
+        //define tempo médio do usuário no sistema
+        double turnosTotaisGeral = 0, turnosMedia;
+        for(Usuarios usuario: usuarios) {
+            turnosTotaisGeral += usuario.getTurnosTotais();
+        }
+        turnosMedia = turnosTotaisGeral / usuarios.length;
+
+        //define usuário que passou mais tempo no sistema
+        int maisTempo = 0;
+        Usuarios usuarioComMaisTempo = new Usuarios();
+        for(Usuarios usuario: usuarios) {
+            if(usuario.getTurnosTotais() > maisTempo) {
+                maisTempo = usuario.getTurnosTotais();
+                usuarioComMaisTempo = usuario;
+            }
+        }
+
+        //define tempo médio de espera por tipo de fila
+        for(Fila fila: filas) {
+            fila.setTempoMedioEspera();
+        }
+
+        //define tempo médio por combinação de necessidades de atendimento
+        for(Combinacoes combinacao: combinacoes) {
+            for(Usuarios usuario: usuarios) {
+                if (usuario.getCombinacao() == combinacao) {
+                    combinacao.setTotalTempo(usuario.getTurnosTotais());
+                }
+            }
+            combinacao.setTempoMedio();
+        }
+
+        WriteFile.escreverArquivo(turnosMedia, usuarioComMaisTempo, filas, combinacoes);
 
     }
 
@@ -505,6 +595,35 @@ public class Main extends Application {
         //propriedades iniciais dos usuarios
         defineUsuarios(usuarios, arquivoFila);
 
+        //define quantidade de combinações
+        String precisaIr = usuarios[0].getPrecisaIr();
+        int proximo = 2;
+        countCombinacao++;
+
+        //usuários
+        for(int i = 1; i < usuarios.length; i++) {
+            //verifica se onde ele precisa ir é igual ao do primeiro
+            if (!usuarios[i].getPrecisaIr().equals(precisaIr)) {
+                //se não for soma na combinação
+                countCombinacao++;
+                //verifica se os próximos também são iguais
+                for(int k = proximo; k < usuarios.length; k++) {
+                    if(usuarios[k].getPrecisaIr().equals(usuarios[i].getPrecisaIr()) && !usuarios[k].getJaSubtraiu()) {
+                        countCombinacao--;
+                        usuarios[k].setJaSubtraiu();
+                    }
+                }
+            }
+            proximo++;
+        }
+
+        //cria e define combinacoes
+        Combinacoes[] combinacoes = new Combinacoes[countCombinacao];
+        for(int i = 0; i < combinacoes.length; i++) {
+            combinacoes[i] = new Combinacoes();
+        }
+        defineCombinacoes(usuarios, combinacoes);
+
         //loop principal
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             //atualiza guichês, fila e turno
@@ -515,6 +634,12 @@ public class Main extends Application {
             //encerra processamento após fim da fila
             if (done) {
                 graphicsContext.fillText("Fim!",1250,100);
+                try {
+                    infoSaida(usuarios, combinacoes, filas);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                botaoPara.fire();
             }
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -524,13 +649,12 @@ public class Main extends Application {
         botaoVelocidade2.setOnAction(e -> timeline.setRate(2));
         botaoVelocidade3.setOnAction(e -> timeline.setRate(3));
 
-        //play, pause e reset
+        //play e pause
         botaoPlay.setOnAction(e -> timeline.play());
         botaoPause.setOnAction(e -> timeline.pause());
-        botaoReset.setOnAction(e -> {
-            timeline.stop();
-            //começar do zero
-        });
+
+        //para simulação
+        botaoPara.setOnAction(e -> timeline.stop());
 
         //roda simulador
         timeline.play();
@@ -561,8 +685,7 @@ public class Main extends Application {
         HBox hBox = new HBox(1);
         botaoPlay.setMinWidth(50);
         botaoPause.setMinWidth(50);
-        botaoReset.setMinWidth(50);
-        hBox.getChildren().addAll(botaoVelocidade1, botaoVelocidade2, botaoVelocidade3, botaoPlay, botaoPause, botaoReset);
+        hBox.getChildren().addAll(botaoVelocidade1, botaoVelocidade2, botaoVelocidade3, botaoPlay, botaoPause);
 
         //adicionando a raiz e propriedades
         root.getChildren().addAll(vBox, hBox);

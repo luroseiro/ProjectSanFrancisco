@@ -4,30 +4,29 @@ class Troca {
 
     //custo da troca
     private int custo;
-    public int getCusto() {
+    int getCusto() {
         return custo;
     }
-    public void setCusto(int custo) {
+    void setCusto(int custo) {
         this.custo = custo;
     }
 
     //guichê no qual o atendente estava
     private char guicheAntes;
-    public char getGuicheAntes() {
+    char getGuicheAntes() {
         return guicheAntes;
     }
-    public void setGuicheAntes(char guicheAntes) {
+    void setGuicheAntes(char guicheAntes) {
         this.guicheAntes = guicheAntes;
     }
 
     //guichê pro qual o atendente vai
     private char guicheDepois;
-    public char getGuicheDepois() {
+    char getGuicheDepois() {
         return guicheDepois;
     }
-    public void setGuicheDepois(char guicheDepois) {
+    void setGuicheDepois(char guicheDepois) {
         this.guicheDepois = guicheDepois;
     }
-
 
 }
