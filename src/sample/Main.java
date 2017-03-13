@@ -87,18 +87,19 @@ public class Main extends Application {
         troca.setCusto(Character.getNumericValue(arquivoSetup[3].charAt(6)));
 
         //define tipo dos guiches
-        int auxTipo = 3, auxAtendentes = 3;
+        int auxTipo = 3;
         for(Guiches guiche: guiches) {
             //define tipo dos guichês
             guiche.setTipo(arquivoSetup[1].charAt(auxTipo));
             auxTipo++;
 
-            //define atendentes
-            if(auxAtendentes < arquivoSetup[2].length())
+            /*//define atendentes
+            if(auxAtendentes < arquivoSetup[2].length()) {
                 if (guiche.getTipo() == arquivoSetup[2].charAt(auxAtendentes)) {
                     guiche.setAtendente();
                     auxAtendentes++;
                 }
+            }*/
         }
 
         //define custo e rótulo
@@ -125,6 +126,19 @@ public class Main extends Application {
                 if(guiche.getTipo() == fila.getTipoFila()) {
                     guiche.setFila(fila);
                     fila.aumentaQtdeGuiches();
+                }
+            }
+        }
+
+        //define atendentes
+        int auxAtendentes = 3;
+        for(Guiches guiche: guiches) {
+            //define atendentes para fila
+            if(auxAtendentes < arquivoSetup[2].length()) {
+                if (guiche.getTipo() == arquivoSetup[2].charAt(auxAtendentes)) {
+                    guiche.setAtendente();
+                    guiche.getFila().aumentaAtendentes();
+                    auxAtendentes++;
                 }
             }
         }
@@ -210,7 +224,7 @@ public class Main extends Application {
         gc.setTextAlign(TextAlignment.CENTER);
 
         //controle de posicionamento
-        int posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
+        double posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
 
         //guichês
         for(Guiches guiche: guiches) {
@@ -247,46 +261,29 @@ public class Main extends Application {
         }
 
         //controle de posição para filas
-        posicaoXProximoCima = 75;
-        posicaoXProximoBaixo = 75;
-        desenhados = 0;
+        posicaoXProximoCima = 92.5;
+        posicaoXProximoBaixo = 92.5;
 
         //filas
         for(Fila fila: filas) {
             //desenha fila em cima
-            if(filas.length <= 10) {
+            if(posicaoXProximoCima <= 992.5) {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoCima + 67.5,135,50,175,10,10);
+                    gc.strokeRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),135,50,175,10,10);
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.strokeRoundRect(posicaoXProximoCima + 17.5, 135, 50, 175, 10, 10);
+                    gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
                     posicaoXProximoCima += 100;
                 }
             }
-            //verifica onde desenhar
+            //desenha fila embaixo
             else {
-                //desenha em cima
-                if (desenhados < filas.length / 2 - 1) {
-                    if (fila.getQtdeGuiches() > 1) {
-                        gc.strokeRoundRect(posicaoXProximoCima + 67.5, 135, 50, 175, 10, 10);
-                        posicaoXProximoCima += 100 * fila.getQtdeGuiches();
-                        desenhados++;
-                    } else {
-                        gc.strokeRoundRect(posicaoXProximoCima + 17.5, 135, 50, 175, 10, 10);
-                        posicaoXProximoCima += 100;
-                        desenhados++;
-                    }
-
-                }
-                //desenha embaixo
-                else {
-                    if (fila.getQtdeGuiches() > 1) {
-                        gc.strokeRoundRect(posicaoXProximoBaixo + 67.5, 325, 50, 175, 10, 10);
-                        posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
-                    } else {
-                        gc.strokeRoundRect(posicaoXProximoBaixo + 17.5, 325, 50, 175, 10, 10);
-                        posicaoXProximoBaixo += 100;
-                    }
+                if (fila.getQtdeGuiches() > 1) {
+                    gc.strokeRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1),325,50,175,10,10);
+                    posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
+                } else {
+                    gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
+                    posicaoXProximoBaixo += 100;
                 }
             }
         }
@@ -309,65 +306,50 @@ public class Main extends Application {
             desenhadoTurno = false;
         }
 
-        //filas
-        int posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
+        //controle de posicionamento das filas
+        int posicaoXProximoCima = 94, posicaoXProximoBaixo = 94;
+        int posicaoXProximoCimaTurno = 117, posicaoXProximoBaixoTurno = 117;
 
+        //filas
         for(Fila fila: filas) {
             gc.setFill(Color.LIGHTGRAY);
             //desenha fila em cima
-            if (filas.length <= 10) {
+            if(posicaoXProximoCima <= 994) {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.fillRoundRect(posicaoXProximoCima + 69,136,47,173,10,10);
+                    gc.fillRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),136,47,173,10,10);
                     gc.setFont(Font.font(40));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCima + 92.5,180,50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1),180,50);
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
+                    posicaoXProximoCimaTurno += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.fillRoundRect(posicaoXProximoCima + 19,136,47,173,10,10);
+                    gc.fillRoundRect(posicaoXProximoCima,136,47,173,10,10);
                     gc.setFont(Font.font(40));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCima + 42.5,180,50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno,180,50);
                     posicaoXProximoCima += 100;
+                    posicaoXProximoCimaTurno += 100;
                 }
             }
-            //verifica onde desenhar
+            //desenha embaixo
             else {
-                //desenha em cima
-                if (desenhados < filas.length / 2 - 1) {
-                    if (fila.getQtdeGuiches() > 1) {
-                        gc.fillRoundRect(posicaoXProximoCima + 69,136, 47,173,10,10);
-                        gc.setFont(Font.font(40));
-                        gc.setFill(Color.BLACK);
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCima + 92.5,180,50);
-                        posicaoXProximoCima += 100 * fila.getQtdeGuiches();
-                        desenhados++;
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoCima + 19,136,47,173,10,10);
-                        gc.setFont(Font.font(40));
-                        gc.setFill(Color.BLACK);
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCima + 42.5,180,50);
-                        posicaoXProximoCima += 100;
-                        desenhados++;
-                    }
-
-                }
-                //desenha embaixo
-                else {
-                    if (fila.getQtdeGuiches() > 1) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 69,326,47,173,10,10);
-                        gc.setFont(Font.font(40));
-                        gc.setFill(Color.BLACK);
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixo + 92.5,480,50);
-                        posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 19,326,47,173,10,10);
-                        gc.setFont(Font.font(40));
-                        gc.setFill(Color.BLACK);
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixo + 42.5,480,50);
-                        posicaoXProximoBaixo += 100;
-                    }
+                if (fila.getQtdeGuiches() > 1) {
+                    gc.fillRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1), 326, 47, 173, 10, 10);
+                    gc.setFont(Font.font(40));
+                    gc.setFill(Color.BLACK);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 370, 50);
+                    posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
+                    posicaoXProximoBaixoTurno += 100 * fila.getQtdeGuiches();
+                } else {
+                    gc.fillRoundRect(posicaoXProximoBaixo, 326, 47, 173, 10, 10);
+                    gc.setFont(Font.font(40));
+                    gc.setFill(Color.BLACK);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 370, 50);
+                    posicaoXProximoBaixo += 100;
+                    posicaoXProximoBaixoTurno += 100;
                 }
             }
+
         }
 
     }
@@ -394,7 +376,7 @@ public class Main extends Application {
     private void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
 
         //controle de fluxo
-        int proximoGuiche = 1, count = 0, contaFinal = 0;
+        int proximoGuiche = 1, count = 0, contaFinal = 0, proximo;
 
         //guichês
         for(int i = 0; i < guiches.length; i++) {
@@ -419,7 +401,22 @@ public class Main extends Application {
                                             guiches[i].setAtendendo(true);
                                         }
                                     } else {
-                                        guiches[i].getFila().aumentaTempoTotalEspera();
+                                        //verifica os próximos guichês
+                                        if(guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
+                                            proximo = i + 1;
+                                            for (int j = proximo; j < guiches.length; j++) {
+                                                if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                                    if (usuario.getPrecisaIr().charAt(0) != guiches[j].getTipo()) {
+                                                        if (j == guiches.length - 1) {
+                                                            guiches[i].getFila().aumentaTempoTotalEspera();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            guiches[i].getFila().aumentaTempoTotalEspera();
+                                        }
                                     }
                                 }
                             }

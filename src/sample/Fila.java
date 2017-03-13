@@ -32,9 +32,18 @@ class Fila {
         this.tamanhoFila--;
     }
 
+    //quantidade de atendentes na fila
+    private int atendentes = 0;
+    int getAtendentes() {
+        return atendentes;
+    }
+    void aumentaAtendentes() {
+        this.atendentes++;
+    }
+
     //quantidade de usuários que passaram pela fila
     private double qtdeUsuarios = 0;
-    private double getQtdeUsuarios() {
+    double getQtdeUsuarios() {
         return qtdeUsuarios;
     }
     void aumentaQtdeUsuarios() {
@@ -43,7 +52,7 @@ class Fila {
 
     //tempo total de espera dos usuários
     private double tempoTotalEspera = 0;
-    private double getTempoTotalEspera() {
+    double getTempoTotalEspera() {
         return tempoTotalEspera;
     }
     void aumentaTempoTotalEspera() {
