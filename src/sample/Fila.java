@@ -43,7 +43,7 @@ class Fila {
 
     //quantidade de usuários que passaram pela fila
     private double qtdeUsuarios = 0;
-    double getQtdeUsuarios() {
+    private double getQtdeUsuarios() {
         return qtdeUsuarios;
     }
     void aumentaQtdeUsuarios() {
@@ -52,11 +52,14 @@ class Fila {
 
     //tempo total de espera dos usuários
     private double tempoTotalEspera = 0;
-    double getTempoTotalEspera() {
+    private double getTempoTotalEspera() {
         return tempoTotalEspera;
     }
     void aumentaTempoTotalEspera() {
-        this.tempoTotalEspera ++;
+        this.tempoTotalEspera++;
+    }
+    void diminuiTempoTotalEspera() {
+        this.tempoTotalEspera--;
     }
 
     //tempo médio de espera dos usuários
@@ -66,6 +69,7 @@ class Fila {
     }
     void setTempoMedioEspera() {
         tempoMedioEspera = getTempoTotalEspera() / getQtdeUsuarios();
+
     }
 
 }

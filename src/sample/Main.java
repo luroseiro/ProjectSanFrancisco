@@ -38,7 +38,7 @@ public class Main extends Application {
     private Button botaoPara = new Button();
 
     //controle de fluxo e outros
-    private int turno = 0, tipoGuiche = 0, countCombinacao = 0;
+    private int turno = 1, tipoGuiche = 0, countCombinacao = 0;
     private boolean done = false, desenhadoTurno = false;
 
     //explorador de arquivos
@@ -389,9 +389,9 @@ public class Main extends Application {
                         //verifica se o usuário chegou
                         if(usuario.getTurnosNecessarios() != -1) {
                             //verifica se usuário está sendo atendido
-                            if (!usuario.getSendoAtendido()) {
+                            if (guiches[i].getAtendente()) {
                                 //verifica se o guichê tem atendente
-                                if (guiches[i].getAtendente()) {
+                                if (!usuario.getSendoAtendido()) {
                                     //verifica se o guichê está atendendo
                                     if (!guiches[i].getAtendendo()) {
                                         if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
@@ -401,74 +401,77 @@ public class Main extends Application {
                                             guiches[i].setAtendendo(true);
                                         }
                                     } else {
-                                        //verifica os próximos guichês
-                                        if(guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
-                                            proximo = i + 1;
-                                            for (int j = proximo; j < guiches.length; j++) {
-                                                if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                        //verifica se o guichê que o usuário está esperando é o que está no loop
+                                        if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                            //verifica a quantidade de guichês e de atendentes
+                                            if (guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
+                                                proximo = i + 1;
+                                                //verifica se algum guichê próximo está livre
+                                                for (int j = proximo; j < guiches.length; j++) {
                                                     if (usuario.getPrecisaIr().charAt(0) != guiches[j].getTipo()) {
                                                         if (j == guiches.length - 1) {
                                                             guiches[i].getFila().aumentaTempoTotalEspera();
                                                         }
+                                                    } else {
+                                                        guiches[i].getFila().diminuiTempoTotalEspera();
                                                     }
                                                 }
+                                            } else {
+                                                guiches[i].getFila().aumentaTempoTotalEspera();
                                             }
-                                        }
-                                        else {
-                                            guiches[i].getFila().aumentaTempoTotalEspera();
                                         }
                                     }
                                 }
-                            }
-                            //se usuário estiver sendo atendido
-                            else {
-                                //verifica se o loop está no guichê que ele está sendo atendido
-                                if (usuario.getQualGuicheSendoAtendido() == i) {
-                                    //verifica quantos turnos faltam pra mudar de guichê
-                                    if (usuario.getTurnosNecessarios() >= 1) {
-                                        usuario.diminuiTurnosNecessarios();
-                                    }
-                                    //se não faltar nenhum turno
-                                    else if (usuario.getTurnosNecessarios() == 0) {
-                                        guiches[i].setAtendendo(false);
-                                        guiches[i].getFila().diminuiTamanhoFila();
-                                        usuario.setSendoAtendido(false);
+                                //se usuário estiver sendo atendido
+                                else {
+                                    //verifica se o loop está no guichê que ele está sendo atendido
+                                    if (usuario.getQualGuicheSendoAtendido() == i) {
+                                        //verifica quantos turnos faltam pra mudar de guichê
+                                        if (usuario.getTurnosNecessarios() >= 1) {
+                                            usuario.diminuiTurnosNecessarios();
+                                        }
+                                        //se não faltar nenhum turno
+                                        else if (usuario.getTurnosNecessarios() == 0) {
+                                            guiches[i].setAtendendo(false);
+                                            guiches[i].getFila().diminuiTamanhoFila();
+                                            usuario.setSendoAtendido(false);
 
-                                        //se estiver no último guichê define precisaIr = null
-                                        if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
-                                            usuario.setPrecisaIr(null);
-                                        }
-                                        //define proximo guichê para usuário
-                                        else {
-                                            usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
-                                        }
-
-                                        //usuário acabou
-                                        if (usuario.getPrecisaIr() == null) {
-                                            usuario.setTurnosNecessarios(-2);
-                                            usuario.setTurnosTotais(turno - usuario.getChegada());
-                                        }
-                                        //se o próximo guichê que ele precisa ir for o próximo do loop
-                                        else if (usuario.getPrecisaIr().charAt(0) == guiches[proximoGuiche].getTipo()) {
-                                            usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                            usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
-                                            guiches[proximoGuiche].getFila().aumentaTamanhoFila();
-                                            guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
-                                        } else {
-                                            //avança próximo guichê até o que for necessário
-                                            while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
-                                                proximoGuiche++;
-                                                count++;
+                                            //se estiver no último guichê define precisaIr = null
+                                            if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
+                                                //usuário acabou
+                                                usuario.setPrecisaIr(null);
+                                                usuario.setTurnosNecessarios(-2);
+                                                usuario.setTurnosTotais(turno + 1 - usuario.getChegada());
                                             }
-                                            usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                            usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
-                                            guiches[proximoGuiche].getFila().aumentaTamanhoFila();
-                                            guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+                                            //define proximo guichê para usuário
+                                            else {
+                                                usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
+                                            }
 
-                                            //volta próximo guichê para o inicial
-                                            while (count > 0) {
-                                                proximoGuiche--;
-                                                count--;
+                                            //usuário não acabou
+                                            if (usuario.getPrecisaIr() != null) {
+                                                if (usuario.getPrecisaIr().charAt(0) == guiches[proximoGuiche].getTipo()) {
+                                                    usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
+                                                    usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
+                                                    guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                                    guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+                                                } else {
+                                                    //avança próximo guichê até o que for necessário
+                                                    while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
+                                                        proximoGuiche++;
+                                                        count++;
+                                                    }
+                                                    usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
+                                                    usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
+                                                    guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                                    guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+
+                                                    //volta próximo guichê para o inicial
+                                                    while (count > 0) {
+                                                        proximoGuiche--;
+                                                        count--;
+                                                    }
+                                                }
                                             }
                                         }
                                     }

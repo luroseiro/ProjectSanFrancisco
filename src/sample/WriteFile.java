@@ -36,6 +36,10 @@ class WriteFile {
         escritor.append("Quem passou mais tempo no sistema foi o usuário ").append(String.valueOf(usuario.getNumeroUsuario()))
                 .append(quebraLinha).append(quebraLinha);
 
+        //abre arquivo
+        Runtime runtime = Runtime.getRuntime();
+        Process process = runtime.exec("C:\\Windows\\system32\\notepad.exe C:\\Users\\lf_ro\\Downloads\\saida.txt");
+
         //fecha escritor
         escritor.close();
 
