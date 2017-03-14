@@ -38,7 +38,7 @@ public class Main extends Application {
     private Button botaoPara = new Button();
 
     //controle de fluxo e outros
-    private int turno = 1, tipoGuiche = 0, countCombinacao = 0;
+    private int turno = 0, tipoGuiche = 0, countCombinacao = 0;
     private boolean done = false, desenhadoTurno = false;
 
     //explorador de arquivos
