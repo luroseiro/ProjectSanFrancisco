@@ -11,10 +11,10 @@ class WriteFile {
         String quebraLinha = System.getProperty("line.separator");
 
         //define formato para números
-        DecimalFormat formato = new DecimalFormat("#.##");
+        DecimalFormat formato = new DecimalFormat("0.00");
 
         //inicia escritor
-        BufferedWriter escritor = new BufferedWriter(new FileWriter("C:\\Users\\lf_ro\\Downloads\\saida.txt"));
+        BufferedWriter escritor = new BufferedWriter(new FileWriter(".\\saida.txt"));
 
         //escreve tempo médio de um usuário no sistema
         escritor.append("Tempo médio de um usuário no sistema: ").append(formato.format(turnosMedia))
@@ -38,7 +38,7 @@ class WriteFile {
 
         //abre arquivo
         Runtime runtime = Runtime.getRuntime();
-        Process process = runtime.exec("C:\\Windows\\system32\\notepad.exe C:\\Users\\lf_ro\\Downloads\\saida.txt");
+        Process process = runtime.exec("C:\\Windows\\system32\\notepad.exe .\\saida.txt");
 
         //fecha escritor
         escritor.close();

@@ -38,16 +38,27 @@ public class Main extends Application {
     private Button botaoPara = new Button();
 
     //controle de fluxo e outros
-    private int turno = 0, tipoGuiche = 0, countCombinacao = 0;
+    private int turno = 0, tipoGuiche = 0, countCombinacao = 0, vezExplorador = 1;
     private boolean done = false, desenhadoTurno = false;
 
     //explorador de arquivos
     private String[] exploradorDeArquivos() {
-        FileChooser exploradorDeArquivos = new FileChooser();
-        exploradorDeArquivos.setInitialDirectory(new File("C:\\Users\\lf_ro\\Downloads"));
-        exploradorDeArquivos.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Arquivo de texto", "*.txt"));
-        File arquivoLido = exploradorDeArquivos.showOpenDialog(null);
 
+        //inicia explorador
+        FileChooser exploradorDeArquivos = new FileChooser();
+        exploradorDeArquivos.setInitialDirectory(new File("."));
+        exploradorDeArquivos.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Arquivo de texto", "*.txt"));
+
+        //define título do explorador
+        if(vezExplorador == 1) {
+            exploradorDeArquivos.setTitle("Carregar setup");
+        }
+        else if(vezExplorador == 2) {
+            exploradorDeArquivos.setTitle("Carregar fila");
+        }
+
+        //cria arquivo
+        File arquivoLido = exploradorDeArquivos.showOpenDialog(null);
         String caminho = arquivoLido.getAbsolutePath();
         String[] arrayArquivo, erro;
         erro = new String[0];
@@ -60,11 +71,6 @@ public class Main extends Application {
             System.out.println("Erro ao ler arquivo!");
             return erro;
         }
-    }
-
-    //carregar arquivos
-    private String[] carregarArquivo() {
-        return exploradorDeArquivos();
     }
 
     //propriedades dos guichês e usuários
@@ -566,7 +572,8 @@ public class Main extends Application {
     private void gameLoop(GraphicsContext graphicsContext) {
 
         //cria arquivo de setup e guichês
-        String[] arquivoSetup = carregarArquivo();
+        String[] arquivoSetup = exploradorDeArquivos();
+        vezExplorador++;
         Troca troca = new Troca();
         Guiches[] guiches = new Guiches[arquivoSetup[1].length() - 3];
 
@@ -589,7 +596,7 @@ public class Main extends Application {
         desenhaGuiches(guiches, graphicsContext, filas);
 
         //cria arquivo fila e usuários
-        String[] arquivoFila = carregarArquivo();
+        String[] arquivoFila = exploradorDeArquivos();
         Usuarios[] usuarios = new Usuarios[arquivoFila.length];
 
         //propriedades iniciais dos usuarios

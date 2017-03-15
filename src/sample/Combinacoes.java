@@ -30,12 +30,12 @@ class Combinacoes {
     }
 
     //define o tempo médio da combinação
-    private long tempoMedio;
-    long getTempoMedio() {
+    private double tempoMedio;
+    double getTempoMedio() {
         return tempoMedio;
     }
     void setTempoMedio() {
-        tempoMedio = Math.round(getTotalTempo() / getQtdeUsuarios());
+        tempoMedio = getTotalTempo() / getQtdeUsuarios();
     }
 
 }
