@@ -39,7 +39,7 @@ public class Main extends Application {
 
     //controle de fluxo e outros
     private int turno = 0, tipoGuiche = 0, countCombinacao = 0, vezExplorador = 1;
-    private boolean done = false, desenhadoTurno = false;
+    private boolean done = false, desenhadoTurno = false, primeiraVez = true;
 
     //explorador de arquivos
     private String[] exploradorDeArquivos() {
@@ -221,82 +221,14 @@ public class Main extends Application {
 
     }
 
-    //desenha e atualiza guichês, atualiza fila
-    private void desenhaGuiches(Guiches[] guiches, GraphicsContext gc, Fila[] filas) {
+    //desenha e atualiza guichês e filas
+    private void atualizaGuiches(Guiches[] guiches, Fila[] filas, GraphicsContext gc) {
 
-        //propriedades iniciais do Graphics Context
-        gc.setLineWidth(2);
-        gc.setFont(Font.font("Arial", 20));
-        gc.setTextAlign(TextAlignment.CENTER);
-
-        //controle de posicionamento
+        //controle
         double posicaoXProximoCima = 75, posicaoXProximoBaixo = 75, desenhados = 0;
 
-        //guichês
-        for(Guiches guiche: guiches) {
-            //verifica atendente e defina pintura
-            if(!guiche.getAtendente()) {
-                gc.setFill(Color.BLACK);
-            }
-            else {
-                gc.setFill(Color.GREEN);
-            }
-
-            //desenha em cima
-            if(desenhados < 10) {
-                //desenha guichê e rótulo
-                gc.fillRoundRect(posicaoXProximoCima, 40, 85, 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiche.getRotulo(), posicaoXProximoCima + 42.5, 20, 90);
-
-                //controle de posicionamento superior
-                desenhados++;
-                posicaoXProximoCima += 100;
-            }
-            //desenha embaixo
-            else {
-                //desenha guichê
-                gc.fillRoundRect(posicaoXProximoBaixo, 510, 85, 85, 10, 10);
-                gc.setFill(Color.BLACK);
-                gc.fillText(guiche.getRotulo(), posicaoXProximoBaixo + 42.5, 625, 90);
-
-                //controle de posicionamento inferior
-                posicaoXProximoBaixo += 100;
-            }
-
-        }
-
-        //controle de posição para filas
-        posicaoXProximoCima = 92.5;
-        posicaoXProximoBaixo = 92.5;
-
-        //filas
-        for(Fila fila: filas) {
-            //desenha fila em cima
-            if(posicaoXProximoCima <= 992.5) {
-                if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),135,50,175,10,10);
-                    posicaoXProximoCima += 100 * fila.getQtdeGuiches();
-                } else {
-                    gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
-                    posicaoXProximoCima += 100;
-                }
-            }
-            //desenha fila embaixo
-            else {
-                if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1),325,50,175,10,10);
-                    posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
-                } else {
-                    gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
-                    posicaoXProximoBaixo += 100;
-                }
-            }
-        }
-    }
-    private void atualizaGuiches(Fila[] filas, GraphicsContext gc) {
-
         //tamanho do texto de turno
+        gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(Font.font(40));
 
         //atualiza texto turno
@@ -312,8 +244,132 @@ public class Main extends Application {
             desenhadoTurno = false;
         }
 
+        //definição dos rótulos
+        gc.setLineWidth(2);
+
+        //desenha conteúdo inicial
+        if(primeiraVez) {
+
+            //desenha legenda
+            gc.setFill(Color.BLACK);
+            gc.setFont(Font.font(20));
+            gc.fillText("Guichê vazio", 1210,200);
+            gc.fillText("Guichê não", 1210,340);
+            gc.fillText("atendendo", 1210,360);
+            gc.fillText("Guichê", 1210,500);
+            gc.fillText("atendendo", 1210,520);
+
+            gc.fillRoundRect(1170, 80, 85, 85, 10, 10);
+            gc.setFill(Color.YELLOW);
+            gc.fillRoundRect(1170, 220, 85, 85, 10, 10);
+            gc.setFill(Color.GREEN);
+            gc.fillRoundRect(1170, 380, 85, 85, 10, 10);
+
+            //desenha rótulo
+            for(Guiches guiche: guiches) {
+                gc.setFill(Color.BLACK);
+                gc.setFont(Font.font("Arial", 20));
+                //desenha em cima
+                if(desenhados < 10) {
+                    gc.fillText(guiche.getRotulo(), posicaoXProximoCima + 42.5, 20, 90);
+                    //controle de posicionamento superior
+                    desenhados++;
+                    posicaoXProximoCima += 100;
+                }
+                //desenha embaixo
+                else {
+                    gc.fillText(guiche.getRotulo(), posicaoXProximoBaixo + 42.5, 625, 90);
+                    //controle de posicionamento inferior
+                    posicaoXProximoBaixo += 100;
+                }
+            }
+
+            //controle para borda fila
+            posicaoXProximoCima = 92.5;
+            posicaoXProximoBaixo = 92.5;
+
+            //desenha borda
+            for(Fila fila: filas) {
+                //desenha fila em cima
+                if(posicaoXProximoCima <= 992.5) {
+                    if (fila.getQtdeGuiches() > 1) {
+                        gc.strokeRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),135,50,175,10,10);
+                        posicaoXProximoCima += 100 * fila.getQtdeGuiches();
+                    } else {
+                        gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
+                        posicaoXProximoCima += 100;
+                    }
+                }
+                //desenha fila embaixo
+                else {
+                    if (fila.getQtdeGuiches() > 1) {
+                        gc.strokeRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1),325,50,175,10,10);
+                        posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
+                    } else {
+                        gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
+                        posicaoXProximoBaixo += 100;
+                    }
+                }
+            }
+            primeiraVez = false;
+        }
+
+        //reset nas variáveis de controle
+        posicaoXProximoCima = 75;
+        posicaoXProximoBaixo = 75;
+        desenhados = 0;
+
+        //desenha guichê
+        for(Guiches guiche: guiches) {
+            //verifica atendente/atendendo e defina pintura
+            if(!guiche.getAtendendo()) {
+                if(guiche.getAtendente()) {
+                    gc.setFill(Color.YELLOW);
+                } else {
+                    gc.setFill(Color.BLACK);
+                }
+            }
+            else {
+                gc.setFill(Color.GREEN);
+            }
+
+            //desenha em cima
+            if(desenhados < 10) {
+                gc.fillRoundRect(posicaoXProximoCima, 40, 85, 85, 10, 10);
+                //desenha tipo
+                if(guiche.getAtendente()) {
+                    gc.setFill(Color.BLACK);
+                }
+                else {
+                    gc.setFill(Color.WHITE);
+                }
+                gc.setFont(Font.font(50));
+                gc.fillText(Character.toString(guiche.getTipo()), posicaoXProximoCima + 42.5, 100, 90);
+                //controle de posicionamento superior
+                desenhados++;
+                posicaoXProximoCima += 100;
+            }
+            //desenha embaixo
+            else {
+                gc.fillRoundRect(posicaoXProximoBaixo, 510, 85, 85, 10, 10);
+                //desenha tipo
+                if(guiche.getAtendente()) {
+                    gc.setFill(Color.BLACK);
+                }
+                else {
+                    gc.setFill(Color.WHITE);
+                }
+                gc.setFont(Font.font(40));
+                gc.fillText(Character.toString(guiche.getTipo()), posicaoXProximoCima + 42.5, 570, 90);
+                //controle de posicionamento inferior
+                posicaoXProximoBaixo += 100;
+            }
+
+        }
+
         //controle de posicionamento das filas
-        int posicaoXProximoCima = 94, posicaoXProximoBaixo = 94;
+        posicaoXProximoCima = 94;
+        posicaoXProximoBaixo = 94;
         int posicaoXProximoCimaTurno = 117, posicaoXProximoBaixoTurno = 117;
 
         //filas
@@ -607,9 +663,6 @@ public class Main extends Application {
         //define guichês e suas filas
         defineGuiches(arquivoSetup, guiches, filas, troca);
 
-        //desenha guichês
-        desenhaGuiches(guiches, graphicsContext, filas);
-
         //cria arquivo fila e usuários
         String[] arquivoFila = exploradorDeArquivos();
         Usuarios[] usuarios = new Usuarios[arquivoFila.length];
@@ -650,12 +703,12 @@ public class Main extends Application {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             //atualiza guichês, fila e turno
             atualizaFila(usuarios, guiches);
-            atualizaGuiches(filas, graphicsContext);
+            atualizaGuiches(guiches, filas, graphicsContext);
             turno++;
 
             //encerra processamento após fim da fila
             if (done) {
-                graphicsContext.fillText("Fim!",1250,100);
+                graphicsContext.fillText("Fim!",1210,600);
                 try {
                     infoSaida(usuarios, combinacoes, filas);
                 } catch (IOException e1) {
