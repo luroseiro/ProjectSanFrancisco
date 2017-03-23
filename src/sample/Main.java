@@ -258,7 +258,6 @@ public class Main extends Application {
             gc.fillText("atendendo", 1210,360);
             gc.fillText("Guichê", 1210,500);
             gc.fillText("atendendo", 1210,520);
-
             gc.fillRoundRect(1170, 80, 85, 85, 10, 10);
             gc.setFill(Color.YELLOW);
             gc.fillRoundRect(1170, 220, 85, 85, 10, 10);
@@ -374,21 +373,23 @@ public class Main extends Application {
 
         //filas
         for(Fila fila: filas) {
-            gc.setFill(Color.LIGHTGRAY);
+            gc.setFill(Color.GRAY);
             //desenha fila em cima
             if(posicaoXProximoCima <= 994) {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.fillRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),136,47,173,10,10);
-                    gc.setFont(Font.font(40));
+                    gc.clearRect(posicaoXProximoCima + 2 + 50 * (fila.getQtdeGuiches() - 1),138,43,170);
+                    gc.fillRoundRect(posicaoXProximoCima + 4.5 + 50 * (fila.getQtdeGuiches() - 1),140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                    gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1),180,50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1),298,50);
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
                     posicaoXProximoCimaTurno += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.fillRoundRect(posicaoXProximoCima,136,47,173,10,10);
-                    gc.setFont(Font.font(40));
+                    gc.clearRect(posicaoXProximoCima + 2,138,43,170);
+                    gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                    gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno,180,50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()),posicaoXProximoCimaTurno,298,50);
                     posicaoXProximoCima += 100;
                     posicaoXProximoCimaTurno += 100;
                 }
@@ -396,17 +397,19 @@ public class Main extends Application {
             //desenha embaixo
             else {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.fillRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1), 326, 47, 173, 10, 10);
-                    gc.setFont(Font.font(40));
+                    gc.clearRect(posicaoXProximoBaixo + 2 + 50 * (fila.getQtdeGuiches() - 1),324,43,170);
+                    gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1), 326, 38, (fila.getTamanhoFila() * 165) / 100, 10, 10);
+                    gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 370, 50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 360, 50);
                     posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
                     posicaoXProximoBaixoTurno += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.fillRoundRect(posicaoXProximoBaixo, 326, 47, 173, 10, 10);
-                    gc.setFont(Font.font(40));
+                    gc.clearRect(posicaoXProximoBaixo + 2,324,43,170);
+                    gc.fillRoundRect(posicaoXProximoBaixo + 4.5, 326, 38, (fila.getTamanhoFila() * 165) / 100, 10, 10);
+                    gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
-                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 370, 50);
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
                     posicaoXProximoBaixo += 100;
                     posicaoXProximoBaixoTurno += 100;
                 }
@@ -428,11 +431,6 @@ public class Main extends Application {
         }
 
         //atualiza usuário para outros guichês
-        atendeUsuario(usuarios, guiches);
-
-    }
-    private void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
-
         //controle de fluxo
         int proximoGuiche = 1, count = 0, proximo, contaFinal = 0;
 
