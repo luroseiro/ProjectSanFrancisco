@@ -13,7 +13,7 @@ class Combinacoes {
 
     //quantidade de usuários da combinação
     private double qtdeUsuarios = 0;
-    private double getQtdeUsuarios() {
+     double getQtdeUsuarios() {
         return qtdeUsuarios;
     }
     void aumentaQtdeUsuarios() {
@@ -21,8 +21,8 @@ class Combinacoes {
     }
 
     //tempo total da combinação
-    private int totalTempo = 0;
-    private int getTotalTempo() {
+    private double totalTempo = 0;
+    private double getTotalTempo() {
         return totalTempo;
     }
     void setTotalTempo(int totalTempo) {

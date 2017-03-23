@@ -69,7 +69,6 @@ class Fila {
     }
     void setTempoMedioEspera() {
         tempoMedioEspera = getTempoTotalEspera() / getQtdeUsuarios();
-
     }
 
 }

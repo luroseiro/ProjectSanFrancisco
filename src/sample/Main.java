@@ -361,17 +361,13 @@ public class Main extends Application {
     }
     private void atualizaFila(Usuarios[] usuarios, Guiches[] guiches) {
 
-        int auxGuiche = 0;
         //atualiza usuário para fila da triagem
         for(Usuarios usuario: usuarios) {
             if(usuario.getChegada() == turno) {
-                if(guiches[auxGuiche].getTipo() == 'A') {
-                    guiches[auxGuiche].getFila().aumentaTamanhoFila();
-                    guiches[auxGuiche].getFila().aumentaQtdeUsuarios();
-                    usuario.setTurnosNecessarios(guiches[auxGuiche].getCusto() + 1);
-                    usuario.setTurnosTotais(guiches[auxGuiche].getCusto());
-                    auxGuiche++;
-                }
+                guiches[0].getFila().aumentaTamanhoFila();
+                guiches[0].getFila().aumentaQtdeUsuarios();
+                usuario.setTurnosNecessarios(guiches[0].getCusto() + 1);
+                usuario.setTurnosTotais(guiches[0].getCusto());
             }
         }
 
@@ -382,7 +378,7 @@ public class Main extends Application {
     private void atendeUsuario(Usuarios[] usuarios, Guiches[] guiches) {
 
         //controle de fluxo
-        int proximoGuiche = 1, count = 0, contaFinal = 0, proximo;
+        int proximoGuiche = 1, count = 0, proximo, contaFinal = 0;
 
         //guichês
         for(int i = 0; i < guiches.length; i++) {
@@ -399,16 +395,13 @@ public class Main extends Application {
                                 //verifica se o guichê tem atendente
                                 if (!usuario.getSendoAtendido()) {
                                     //verifica se o guichê está atendendo
-                                    if (!guiches[i].getAtendendo()) {
-                                        if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                    if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                        if (!guiches[i].getAtendendo()) {
                                             usuario.setSendoAtendido(true);
                                             usuario.diminuiTurnosNecessarios();
                                             usuario.setQualGuicheSendoAtendido(i);
                                             guiches[i].setAtendendo(true);
-                                        }
-                                    } else {
-                                        //verifica se o guichê que o usuário está esperando é o que está no loop
-                                        if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                        } else {
                                             //verifica a quantidade de guichês e de atendentes
                                             if (guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
                                                 proximo = i + 1;
@@ -419,7 +412,7 @@ public class Main extends Application {
                                                             guiches[i].getFila().aumentaTempoTotalEspera();
                                                         }
                                                     } else {
-                                                        guiches[i].getFila().diminuiTempoTotalEspera();
+                                                        break;
                                                     }
                                                 }
                                             } else {
@@ -447,11 +440,33 @@ public class Main extends Application {
                                                 //usuário acabou
                                                 usuario.setPrecisaIr(null);
                                                 usuario.setTurnosNecessarios(-2);
-                                                usuario.setTurnosTotais(turno + 1 - usuario.getChegada());
+                                                if(usuario.getChegada() == 1) {
+                                                    usuario.setTurnosTotais(turno + 1 - usuario.getChegada());
+                                                }
+                                                else {
+                                                    usuario.setTurnosTotais(turno - usuario.getChegada());
+                                                }
                                             }
                                             //define proximo guichê para usuário
                                             else {
                                                 usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
+                                            }
+
+                                            //verifica se algum usuário anterior está na mesma fila para ser atendido
+                                            if(guiches[i].getFila().getTamanhoFila() > 0) {
+                                                for(Usuarios usuario2: usuarios) {
+                                                    if(usuario2.getChegada() <= turno && usuario2.getPrecisaIr() != null) {
+                                                        if (usuario2.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                                            if (usuario2.getNumeroUsuario() < usuario.getNumeroUsuario()) {
+                                                                usuario2.setSendoAtendido(true);
+                                                                usuario2.diminuiTurnosNecessarios();
+                                                                usuario2.setQualGuicheSendoAtendido(i);
+                                                                guiches[i].setAtendendo(true);
+                                                                guiches[i].getFila().diminuiTempoTotalEspera();
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
 
                                             //usuário não acabou
@@ -510,7 +525,7 @@ public class Main extends Application {
         for(Usuarios usuario: usuarios) {
             turnosTotaisGeral += usuario.getTurnosTotais();
         }
-        turnosMedia = turnosTotaisGeral / usuarios.length;
+        turnosMedia = turnosTotaisGeral / (double) usuarios.length;
 
         //define usuário que passou mais tempo no sistema
         int maisTempo = 0;
