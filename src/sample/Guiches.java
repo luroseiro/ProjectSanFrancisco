@@ -11,13 +11,22 @@ class Guiches {
         this.tipo = tipo;
     }
 
+    //número
+    private int numero;
+    int getNumero() {
+        return numero;
+    }
+    void setNumero(int numero) {
+        this.numero = numero;
+    }
+
     //atendente
     private boolean atendente;
     boolean getAtendente() {
         return atendente;
     }
-    void setAtendente() {
-        this.atendente = true;
+    void setAtendente(boolean atendente) {
+        this.atendente = atendente;
     }
 
     //custo
@@ -54,6 +63,33 @@ class Guiches {
     }
     void setAtendendo(boolean atendendo) {
         this.atendendo = atendendo;
+    }
+
+    private boolean recebendoTroca = false;
+    boolean getRecebendoTroca() {
+        return recebendoTroca;
+    }
+    void setRecebendoTroca(boolean recebendoTroca) {
+        this.recebendoTroca = recebendoTroca;
+    }
+
+    private boolean fazendoTroca = false;
+    public boolean getFazendoTroca() {
+        return fazendoTroca;
+    }
+    public void setFazendoTroca(boolean fazendoTroca) {
+        this.fazendoTroca = fazendoTroca;
+    }
+
+    private int countTroca = 0;
+    int getCountTroca() {
+        return countTroca;
+    }
+    void aumentaCountTroca() {
+        this.countTroca++;
+    }
+    void resetCountTroca() {
+        this.countTroca = 0;
     }
 
 }
