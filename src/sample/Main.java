@@ -87,10 +87,6 @@ public class Main extends Application {
             tipoGuiche++;
         }
 
-        for(Guiches guiche: guiches) {
-            System.out.println(guiche.getNumero());
-        }
-
     }
     private void defineGuiches(String[] arquivoSetup, Guiches[] guiches, Fila[] filas, Troca troca) {
 
@@ -573,6 +569,7 @@ public class Main extends Application {
                                         }
                                         //se não faltar nenhum turno
                                         else if (usuario.getTurnosNecessarios() == 0) {
+
                                             guiches[i].setAtendendo(false);
                                             guiches[i].getFila().diminuiTamanhoFila();
                                             guiches[i].getFila().diminuiQtdeGuichesAtendendo();
@@ -598,7 +595,8 @@ public class Main extends Application {
                                             //verifica se algum usuário anterior está na mesma fila para ser atendido
                                             if(guiches[i].getFila().getTamanhoFila() > 0) {
                                                 for(Usuarios usuario2: usuarios) {
-                                                    if(usuario2.getChegada() <= turno && usuario2.getPrecisaIr() != null) {
+                                                    if(usuario2.getChegada() <= turno && !usuario2.getSendoAtendido() && usuario2.getPrecisaIr() != null
+                                                            && guiches[i].getFila().getQtdeGuichesAtendendo() < guiches[i].getFila().getAtendentes()) {
                                                         if (usuario2.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
                                                             if (usuario2.getNumeroUsuario() < usuario.getNumeroUsuario()) {
                                                                 usuario2.setSendoAtendido(true);
@@ -674,16 +672,15 @@ public class Main extends Application {
         for(Guiches guicheQuePrecisa: guiches) {
             System.out.println(guicheQuePrecisa.getTipo() + ": " + guicheQuePrecisa.getFila().getAtendentes() + " atendentes e "
                     + guicheQuePrecisa.getFila().getTamanhoFila() + " na fila, " + guicheQuePrecisa.getFila().getQtdeGuichesAtendendo()
-                    + " atendendo " + guicheQuePrecisa.getAtendente() + " " + guicheQuePrecisa.getFila().getTamanhoFila());
+                    + " atendendo, " + guicheQuePrecisa.getAtendente());
             if (guicheQuePrecisa.getFila().getQtdeGuiches() > guicheQuePrecisa.getFila().getAtendentes() && !guicheQuePrecisa.getAtendente()
                     && guicheQuePrecisa.getFila().getTamanhoFila() >= 1
                     && guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()) {
-                if (!guicheQuePrecisa.getFila().getRecebendoTroca()) {
-                    System.out.println("guichê que precisa: " + guicheQuePrecisa.getTipo());
-                    for (Guiches guiche : guiches) {
+                for (Guiches guiche: guiches) {
+                    if (!guicheQuePrecisa.getFila().getRecebendoTroca()) {
                         if (!guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()
-                                && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes() && !guiche.getFazendoTroca()) {
-                            System.out.println(guiche.getTipo() + ": " + guiche.getAtendendo());
+                                && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
+                            System.out.println("guichê que precisa: " + guicheQuePrecisa.getTipo());
                             System.out.println("pode doar: " + guiche.getTipo());
 
                             if(guicheQuePrecisa.getFila().getAtendentes() == 0) {
@@ -703,29 +700,58 @@ public class Main extends Application {
                                         * guicheQuePrecisa.getCusto()) / aux1)
                                         > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux2) + troca.getCusto()) * 1.5)) {
                                     System.out.println("entrou: " + guiche.getTipo());
-                                    trocaAtendente(guicheQuePrecisa, guiche, troca, inicial);
+                                    trocaAtendente(guicheQuePrecisa, troca, inicial);
                                     guiche.setAtendente(false);
                                     guiche.getFila().diminuiAtendentes();
                                     guicheQuePrecisa.setRecebendoTroca(true);
-                                    guiche.setFazendoTroca(true);
                                     guicheQuePrecisa.getFila().setRecebendoTroca(true);
                                     guicheQuePrecisa.getFila().aumentaQtdeTrocas();
                                     break;
                                 }
                             }
                             else {
-                                System.out.println("entrou por só ter 1: " + guiche.getTipo());
-                                trocaAtendente(guicheQuePrecisa, guiche, troca, inicial);
-                                System.out.println(guiche.getNumero());
-                                guiche.setAtendente(false);
-                                guiche.setFazendoTroca(true);
-                                guiche.getFila().diminuiAtendentes();
-                                System.out.println(guiche.getAtendente());
-                                /*-----------------------------ERRO------------------------------------------------*/
-                                System.out.println("demonstra");
-                                for (Guiches guiche1 : guiches) {
-                                    System.out.println(guiche1.getTipo() + ": " + guiche1.getAtendente());
+                                if(guiche.getAtendente()) {
+                                    System.out.println("entrou por só ter 1: " + guiche.getTipo());
+                                    trocaAtendente(guicheQuePrecisa, troca, inicial);
+                                    guiche.setAtendente(false);
+                                    guiche.getFila().diminuiAtendentes();
+                                    guicheQuePrecisa.setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().aumentaQtdeTrocas();
+                                    break;
                                 }
+                            }
+                        }
+                    } else {
+                        if(guicheQuePrecisa.getRecebendoTroca()) {
+                            trocaAtendente(guicheQuePrecisa, troca, inicial);
+                            break;
+                        }
+                        else if(!guicheQuePrecisa.getRecebendoTroca()
+                                && guicheQuePrecisa.getFila().getQtdeTrocas()
+                                + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()
+                                && guiche.getAtendente() && !guiche.getAtendendo()) {
+
+                            if(guicheQuePrecisa.getFila().getAtendentes() == 0) {
+                                aux1 = 1;
+                            } else {
+                                aux1 = guicheQuePrecisa.getFila().getAtendentes();
+                            }
+                            if(guiche.getFila().getAtendentes() == 0) {
+                                aux2 = 1;
+                            }
+                            else {
+                                aux2 = guiche.getFila().getAtendentes();
+                            }
+
+                            if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
+                                    * guicheQuePrecisa.getCusto()) / aux1)
+                                    > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux2) + troca.getCusto()) * 1.5)) {
+                                System.out.println("guichê que precisa: " + guicheQuePrecisa.getTipo());
+                                System.out.println("pode doar (2): " + guiche.getTipo());
+                                trocaAtendente(guicheQuePrecisa, troca, inicial);
+                                guiche.setAtendente(false);
+                                guiche.getFila().diminuiAtendentes();
                                 guicheQuePrecisa.setRecebendoTroca(true);
                                 guicheQuePrecisa.getFila().setRecebendoTroca(true);
                                 guicheQuePrecisa.getFila().aumentaQtdeTrocas();
@@ -733,21 +759,12 @@ public class Main extends Application {
                             }
                         }
                     }
-                } else {
-                    if(guicheQuePrecisa.getRecebendoTroca()) {
-                        trocaAtendente(guicheQuePrecisa, , troca, inicial);
-                    }
-                    else if(!guicheQuePrecisa.getRecebendoTroca()
-                            && guicheQuePrecisa.getFila().getQtdeTrocas() < guicheQuePrecisa.getFila().getTamanhoFila()) {
-                        System.out.println("oi");
-                        trocaAtendente(guicheQuePrecisa, troca, inicial);
-                    }
                 }
             }
         }
 
     }
-    private void trocaAtendente(Guiches novo, Guiches antigo, Troca troca, boolean inicial) {
+    private void trocaAtendente(Guiches novo, Troca troca, boolean inicial) {
 
         if(!novo.getRecebendoTroca()) {
             System.out.println("primeira vez");
@@ -761,11 +778,12 @@ public class Main extends Application {
                     novo.setAtendente(true);
                     novo.getFila().aumentaAtendentes();
                     System.out.println("pronto");
-                    novo.getFila().setRecebendoTroca(false);
                     novo.setRecebendoTroca(false);
-                    antigo.setFazendoTroca(false);
                     novo.getFila().diminuiQtdeTrocas();
                     novo.resetCountTroca();
+                    if(novo.getFila().getQtdeTrocas() == 0) {
+                        novo.getFila().setRecebendoTroca(false);
+                    }
                 }
             }
         }
