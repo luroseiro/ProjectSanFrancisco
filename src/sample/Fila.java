@@ -20,6 +20,7 @@ class Fila {
         this.qtdeGuiches++;
     }
 
+    //verifica se a fila está recebendo troca
     private boolean recebendoTroca = false;
     boolean getRecebendoTroca() {
         return recebendoTroca;
@@ -28,6 +29,7 @@ class Fila {
         this.recebendoTroca = recebendoTroca;
     }
 
+    //quantidade de trocas sendo executadas na fila
     private int qtdeTrocas = 0;
     int getQtdeTrocas() {
         return qtdeTrocas;
@@ -39,6 +41,7 @@ class Fila {
         this.qtdeTrocas--;
     }
 
+    //quantidade guichês em atendimento
     private int qtdeGuichesAtendendo = 0;
     int getQtdeGuichesAtendendo() {
         return qtdeGuichesAtendendo;
@@ -54,9 +57,6 @@ class Fila {
     private int tamanhoFila = 0;
     int getTamanhoFila() {
         return tamanhoFila;
-    }
-    void setTamanhoFila(int tamanhoFila) {
-        this.tamanhoFila = tamanhoFila;
     }
     void aumentaTamanhoFila() {
         this.tamanhoFila++;
@@ -75,15 +75,6 @@ class Fila {
     }
     void diminuiAtendentes() {
         this.atendentes--;
-    }
-
-    //custo da fila
-    private int custo;
-    public int getCusto() {
-        return custo;
-    }
-    public void setCusto(int custo) {
-        this.custo = custo;
     }
 
     //quantidade de usuários que passaram pela fila

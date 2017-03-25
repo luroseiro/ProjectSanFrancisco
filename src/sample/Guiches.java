@@ -56,7 +56,7 @@ class Guiches {
         this.fila = fila;
     }
 
-    //atendendo
+    //atendimento
     private boolean atendendo = false;
     boolean getAtendendo() {
         return atendendo;
@@ -65,6 +65,7 @@ class Guiches {
         this.atendendo = atendendo;
     }
 
+    //guichê está recebendo troca
     private boolean recebendoTroca = false;
     boolean getRecebendoTroca() {
         return recebendoTroca;
@@ -73,6 +74,7 @@ class Guiches {
         this.recebendoTroca = recebendoTroca;
     }
 
+    //custo da troca a ser pago
     private int countTroca = 0;
     int getCountTroca() {
         return countTroca;

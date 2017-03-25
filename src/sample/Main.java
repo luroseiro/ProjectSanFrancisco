@@ -675,16 +675,64 @@ public class Main extends Application {
 
         //guichês que podem precisar de troca
         for(Guiches guicheQuePrecisa: guiches) {
-            //guichê sobrando na fila
+            //condições para o guichê precisar de uma troca
             if (guicheQuePrecisa.getFila().getQtdeGuiches() > guicheQuePrecisa.getFila().getAtendentes()
                     && !guicheQuePrecisa.getAtendente() && guicheQuePrecisa.getFila().getTamanhoFila() >= 1
                     && guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()) {
 
+                //verifica guichês que podem fazer a troca
                 for(Guiches guiche: guiches) {
-                    if (!guicheQuePrecisa.getFila().getRecebendoTroca()) {
+                    //se a fila já estiver recebendo uma troca
+                    if(guicheQuePrecisa.getFila().getRecebendoTroca()) {
+                        //se o guichê já estiver recebendo uma troca
+                        if(guicheQuePrecisa.getRecebendoTroca()) {
+                            trocaAtendente(guicheQuePrecisa, troca, inicial);
+                            break;
+                        //se o guichê não estiver recebendo uma troca e vai começar agora
+                        } else {
+                            //condições para começar uma nova troca
+                            if(guicheQuePrecisa.getFila().getQtdeTrocas()
+                                    + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()
+                                    && guiche.getAtendente() && !guiche.getAtendendo()
+                                    && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
+
+                                //auxiliar para divisão do que vai ceder
+                                if(guiche.getFila().getAtendentes() == 0) {
+                                    aux1 = 1;
+                                }
+                                else {
+                                    aux1 = guiche.getFila().getAtendentes();
+                                }
+
+                                //auxiliar para divisão do que vai receber
+                                if(guicheQuePrecisa.getFila().getAtendentes() == 0) {
+                                    aux2 = 1;
+                                } else {
+                                    aux2 = guicheQuePrecisa.getFila().getAtendentes();
+                                }
+
+                                //verifica se vale a pena começar uma troca
+                                if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
+                                        * guicheQuePrecisa.getCusto()) / aux2)
+                                        > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux1) + troca.getCusto()) * 1.5)) {
+
+                                    trocaAtendente(guicheQuePrecisa, troca, inicial);
+                                    guiche.setAtendente(false);
+                                    guiche.getFila().diminuiAtendentes();
+                                    guicheQuePrecisa.setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().aumentaQtdeTrocas();
+                                    break;
+                                }
+                            }
+                        }
+                    //se a fila não estiver recebendo troca
+                    } else {
+                        //condições para começar uma nova troca
                         if (!guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()
                                 && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
 
+                            //auxiliar para divisão do que vai ceder
                             if(guiche.getFila().getAtendentes() == 0) {
                                 aux1 = 1;
                             }
@@ -692,6 +740,7 @@ public class Main extends Application {
                                 aux1 = guiche.getFila().getAtendentes();
                             }
 
+                            //se o que precisa não tiver atendente
                             if(guicheQuePrecisa.getFila().getAtendentes() == 0) {
                                 if(guiche.getAtendente()) {
                                     trocaAtendente(guicheQuePrecisa, troca, inicial);
@@ -702,10 +751,13 @@ public class Main extends Application {
                                     guicheQuePrecisa.getFila().aumentaQtdeTrocas();
                                     break;
                                 }
+                            //se tiver atendente
                             } else {
+                                //verifica se vale a pena
                                 if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
                                         * guicheQuePrecisa.getCusto()) / guicheQuePrecisa.getFila().getAtendentes())
                                         > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux1) + troca.getCusto()) * 1.5)) {
+
                                     trocaAtendente(guicheQuePrecisa, troca, inicial);
                                     guiche.setAtendente(false);
                                     guiche.getFila().diminuiAtendentes();
@@ -714,41 +766,6 @@ public class Main extends Application {
                                     guicheQuePrecisa.getFila().aumentaQtdeTrocas();
                                     break;
                                 }
-                            }
-                        }
-                    } else {
-                        if(guicheQuePrecisa.getRecebendoTroca()) {
-                            trocaAtendente(guicheQuePrecisa, troca, inicial);
-                            break;
-                        }
-                        else if(!guicheQuePrecisa.getRecebendoTroca()
-                                && guicheQuePrecisa.getFila().getQtdeTrocas()
-                                + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()
-                                && guiche.getAtendente() && !guiche.getAtendendo()
-                                && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
-
-                            if(guicheQuePrecisa.getFila().getAtendentes() == 0) {
-                                aux1 = 1;
-                            } else {
-                                aux1 = guicheQuePrecisa.getFila().getAtendentes();
-                            }
-                            if(guiche.getFila().getAtendentes() == 0) {
-                                aux2 = 1;
-                            }
-                            else {
-                                aux2 = guiche.getFila().getAtendentes();
-                            }
-
-                            if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
-                                    * guicheQuePrecisa.getCusto()) / aux1)
-                                    > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux2) + troca.getCusto()) * 1.5)) {
-                                trocaAtendente(guicheQuePrecisa, troca, inicial);
-                                guiche.setAtendente(false);
-                                guiche.getFila().diminuiAtendentes();
-                                guicheQuePrecisa.setRecebendoTroca(true);
-                                guicheQuePrecisa.getFila().setRecebendoTroca(true);
-                                guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                break;
                             }
                         }
                     }
@@ -760,18 +777,22 @@ public class Main extends Application {
     }
     private void trocaAtendente(Guiches novo, Troca troca, boolean inicial) {
 
+        //verifica se ele não está recebendo troca
         if(!novo.getRecebendoTroca()) {
             novo.aumentaCountTroca();
         }
+        //se estiver, só roda se for no começo de cada turno
         else {
             if(inicial) {
                 novo.aumentaCountTroca();
+                //verifica se o custo da troca já foi pago
                 if (novo.getCountTroca() == troca.getCusto()) {
                     novo.setAtendente(true);
                     novo.getFila().aumentaAtendentes();
                     novo.setRecebendoTroca(false);
                     novo.getFila().diminuiQtdeTrocas();
                     novo.resetCountTroca();
+                    //verifica se a fila não está mais recebendo trocas
                     if(novo.getFila().getQtdeTrocas() == 0) {
                         novo.getFila().setRecebendoTroca(false);
                     }
