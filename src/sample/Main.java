@@ -79,7 +79,6 @@ public class Main extends Application {
         //cria guiches
         for(int i = 0; i < guiches.length; i++) {
             guiches[i] = new Guiches();
-            guiches[i].setNumero(i);
         }
 
         //define ultimo tipo de guiche
@@ -224,17 +223,22 @@ public class Main extends Application {
         gc.setTextAlign(TextAlignment.CENTER);
 
         //legenda texto
-        gc.fillText("Guichê vazio", 1210,200);
-        gc.fillText("Guichê não", 1210,340);
-        gc.fillText("atendendo", 1210,360);
-        gc.fillText("Guichê", 1210,500);
-        gc.fillText("atendendo", 1210,520);
+        gc.fillText("Guichê vazio", 1210,160);
+        gc.fillText("Guichê não", 1210,290);
+        gc.fillText("atendendo", 1210,310);
+        gc.fillText("Guichê", 1210,440);
+        gc.fillText("atendendo", 1210,460);
+        gc.fillText("Guichê", 1210,590);
+        gc.fillText("no processo", 1210,610);
+        gc.fillText("de troca", 1210,630);
         //legenda guichê
-        gc.fillRoundRect(1170, 80, 85, 85, 10, 10);
+        gc.fillRoundRect(1170, 50, 85, 85, 10, 10);
         gc.setFill(Color.YELLOW);
-        gc.fillRoundRect(1170, 220, 85, 85, 10, 10);
+        gc.fillRoundRect(1170, 180, 85, 85, 10, 10);
         gc.setFill(Color.GREEN);
-        gc.fillRoundRect(1170, 380, 85, 85, 10, 10);
+        gc.fillRoundRect(1170, 330, 85, 85, 10, 10);
+        gc.setFill(Color.ORANGE);
+        gc.fillRoundRect(1170,480,85,85,10,10);
 
         //desenha rótulo do guichê
         for(Guiches guiche: guiches) {
@@ -306,10 +310,15 @@ public class Main extends Application {
         for(Guiches guiche: guiches) {
             //verifica atendente/atendendo e defina pintura
             if(!guiche.getAtendendo()) {
-                if(guiche.getAtendente()) {
-                    gc.setFill(Color.YELLOW);
-                } else {
-                    gc.setFill(Color.BLACK);
+                if(!guiche.getRecebendoTroca()) {
+                    if (guiche.getAtendente()) {
+                        gc.setFill(Color.YELLOW);
+                    } else {
+                        gc.setFill(Color.BLACK);
+                    }
+                }
+                else {
+                    gc.setFill(Color.ORANGE);
                 }
             }
             else {

@@ -11,15 +11,6 @@ class Guiches {
         this.tipo = tipo;
     }
 
-    //número
-    private int numero;
-    int getNumero() {
-        return numero;
-    }
-    void setNumero(int numero) {
-        this.numero = numero;
-    }
-
     //atendente
     private boolean atendente;
     boolean getAtendente() {
@@ -72,6 +63,14 @@ class Guiches {
     }
     void setRecebendoTroca(boolean recebendoTroca) {
         this.recebendoTroca = recebendoTroca;
+    }
+
+    private boolean fazendoTroca = false;
+    boolean getFazendoTroca() {
+        return fazendoTroca;
+    }
+    void setFazendoTroca(boolean fazendoTroca) {
+        this.fazendoTroca = fazendoTroca;
     }
 
     //custo da troca a ser pago
