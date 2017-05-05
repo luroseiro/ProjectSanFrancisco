@@ -29,6 +29,9 @@ public class Main extends Application {
     private Button botaoVelocidade1 = new Button("Velocidade: x1");
     private Button botaoVelocidade2 = new Button("Velocidade: x2");
     private Button botaoVelocidade3 = new Button("Velocidade: x3");
+    private Button botaoVelocidade10 = new Button("Velocidade: x10");
+    private Button botaoVelocidade50 = new Button("Velocidade: x50");
+    private Button botaoVelocidade300 = new Button("Velocidade: x300");
 
     //play e pause
     private Button botaoPlay = new Button("Play");
@@ -397,7 +400,7 @@ public class Main extends Application {
                     gc.clearRect(posicaoXProximoCima + 2 + 50 * (fila.getQtdeGuiches() - 1),138,43,170);
 
                     //desenha barra
-                    if(fila.getTamanhoFila() <= 165) {
+                    if(fila.getTamanhoFila() <= 99) {
                         gc.fillRoundRect(posicaoXProximoCima + 4.5 + 50 * (fila.getQtdeGuiches() - 1),140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
                         gc.fillRoundRect(posicaoXProximoCima + 4.5 + 50 * (fila.getQtdeGuiches() - 1),140,38,165,10,10);
@@ -421,7 +424,7 @@ public class Main extends Application {
                     gc.clearRect(posicaoXProximoCima + 2,138,43,170);
 
                     //desenha barra
-                    if(fila.getTamanhoFila() <= 165) {
+                    if(fila.getTamanhoFila() <= 99) {
                         gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
                         gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,165,10,10);
@@ -449,8 +452,8 @@ public class Main extends Application {
                     gc.clearRect(posicaoXProximoBaixo + 2 + 50 * (fila.getQtdeGuiches() - 1),328,43,170);
 
                     //desenha barra
-                    if(fila.getTamanhoFila() <= 165) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1),330,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                    if(fila.getTamanhoFila() <= 99) {
+                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1),495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
                         gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1),330,38,165,10,10);
                     }
@@ -473,8 +476,8 @@ public class Main extends Application {
                     gc.clearRect(posicaoXProximoBaixo + 2,328,43,170);
 
                     //desenha barra
-                    if(fila.getTamanhoFila() <= 165) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                    if(fila.getTamanhoFila() <= 99) {
+                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
                         gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,165,10,10);
                     }
@@ -963,7 +966,6 @@ public class Main extends Application {
 
             //encerra processamento após fim da fila
             if (done) {
-                graphicsContext.fillText("Fim!",1210,600);
                 try {
                     infoSaida(usuarios, combinacoes, filas);
                 } catch (IOException e1) {
@@ -978,6 +980,9 @@ public class Main extends Application {
         botaoVelocidade1.setOnAction(e -> timeline.setRate(1));
         botaoVelocidade2.setOnAction(e -> timeline.setRate(2));
         botaoVelocidade3.setOnAction(e -> timeline.setRate(3));
+        botaoVelocidade10.setOnAction(e -> timeline.setRate(10));
+        botaoVelocidade50.setOnAction(e -> timeline.setRate(50));
+        botaoVelocidade300.setOnAction(e -> timeline.setRate(300));
 
         //play e pause
         botaoPlay.setOnAction(e -> timeline.play());
@@ -1013,10 +1018,10 @@ public class Main extends Application {
         vBox.getChildren().addAll(menuBar, canvas);
 
         //ajustando botões de controle de fluxo
-        HBox hBox = new HBox(1);
+        HBox hBox = new HBox(2);
         botaoPlay.setMinWidth(50);
         botaoPause.setMinWidth(50);
-        hBox.getChildren().addAll(botaoVelocidade1, botaoVelocidade2, botaoVelocidade3, botaoPlay, botaoPause);
+        hBox.getChildren().addAll(botaoVelocidade1, botaoVelocidade2, botaoVelocidade3, botaoVelocidade10, botaoVelocidade50, botaoVelocidade300, botaoPlay, botaoPause);
 
         //adicionando a raiz e propriedades
         root.getChildren().addAll(vBox, hBox);

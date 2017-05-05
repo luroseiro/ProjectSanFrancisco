@@ -65,14 +65,6 @@ class Guiches {
         this.recebendoTroca = recebendoTroca;
     }
 
-    private boolean fazendoTroca = false;
-    boolean getFazendoTroca() {
-        return fazendoTroca;
-    }
-    void setFazendoTroca(boolean fazendoTroca) {
-        this.fazendoTroca = fazendoTroca;
-    }
-
     //custo da troca a ser pago
     private int countTroca = 0;
     int getCountTroca() {
