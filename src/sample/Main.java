@@ -756,7 +756,7 @@ public class Main extends Application {
                             //se a fila não estiver recebendo troca
                         } else {
                             //condições para começar uma nova troca
-                            if (!guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()
+                            if (!guiche.getAtendendo() && guiche.getAtendente() && guiche.getTipo() != guicheQuePrecisa.getTipo()
                                     && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
 
                                 //auxiliar para divisão do que vai ceder
