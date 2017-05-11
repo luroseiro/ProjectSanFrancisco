@@ -499,7 +499,7 @@ public class Main extends Application {
 
         //atualiza usuário para outros guichês
         //controle de fluxo
-        int proximoGuiche = 1, count = 0, proximo, contaFinal = 0;
+        int proximoGuiche = 1, proximo, contaFinal = 0;
 
         //guichês
         for(int i = 0; i < guiches.length; i++) {
@@ -573,7 +573,6 @@ public class Main extends Application {
                                             //ajusta o guichê que o usuário vai
                                             while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
                                                 proximoGuiche++;
-                                                count++;
                                             }
 
                                             //ajusta as filas e turnos necessários
