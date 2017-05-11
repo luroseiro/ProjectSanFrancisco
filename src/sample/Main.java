@@ -42,7 +42,7 @@ public class Main extends Application {
 
     //controle de fluxo e outros
     private int turno = 0, tipoGuiche = 0, countCombinacao = 0, vezExplorador = 1, countGuiche = 0;
-    private boolean done = false, desenhadoTurno = false, primeiraVez = true;
+    private boolean done = false, primeiraVez = true;
 
     //explorador de arquivos
     private String[] exploradorDeArquivos() {
@@ -279,21 +279,19 @@ public class Main extends Application {
         for(Fila fila: filas) {
             //desenha em cima
             if(posicaoXProximoCima <= 992.5) {
+                gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
                     posicaoXProximoCima += 100;
                 }
             }
             //desenha embaixo
             else {
+                gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
                     posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
                 } else {
-                    gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
                     posicaoXProximoBaixo += 100;
                 }
             }
@@ -308,15 +306,8 @@ public class Main extends Application {
         gc.setFill(Color.BLACK);
 
         //atualiza texto
-        if (!desenhadoTurno) {
-            gc.clearRect(1100, 0, 250, 50);
-            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
-            desenhadoTurno = true;
-        } else {
-            gc.clearRect(1100, 0, 250, 50);
-            gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
-            desenhadoTurno = false;
-        }
+        gc.clearRect(1100, 0, 250, 50);
+        gc.fillText("Turno: " + Integer.toString(turno), 1200, 30);
 
     }
     private void desenhaGuiches(GraphicsContext gc, Guiches[] guiches, double posicaoXProximoCima, double posicaoXProximoBaixo, int desenhados) {
@@ -396,7 +387,6 @@ public class Main extends Application {
 
         //controle
         int posicaoXProximoCimaTurno = 117, posicaoXProximoBaixoTurno = 117 + countGuiche * 100;
-        posicaoXProximoBaixo += countGuiche * 100;
 
         for(Fila fila: filas) {
             //define pintura da barra
@@ -404,104 +394,62 @@ public class Main extends Application {
 
             //desenha em cima
             if(posicaoXProximoCima <= 994) {
+                //limpa barra
+                gc.clearRect(posicaoXProximoCima + 2,138,43,170);
+
+                //desenha barra
+                if(fila.getTamanhoFila() <= 99) {
+                    gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                } else {
+                    gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,165,10,10);
+                }
+
+                //desenha tamanho da fila
+                gc.setFont(Font.font(35));
+                gc.setFill(Color.BLACK);
+                if(fila.getTamanhoFila() <= 99) {
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCimaTurno, 298, 50);
+                } else {
+                    gc.fillText("99", posicaoXProximoCimaTurno, 278, 50);
+                    gc.fillText("+", posicaoXProximoCimaTurno, 298, 50);
+                }
+
+                //controle de posicionamento superior
                 if (fila.getQtdeGuiches() > 1) {
-                    //limpa barra
-                    gc.clearRect(posicaoXProximoCima + 2,138,43,170);
-
-                    //desenha barra
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,165,10,10);
-                    }
-
-                    //desenha tamanho da fila
-                    gc.setFont(Font.font(35));
-                    gc.setFill(Color.BLACK);
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCimaTurno, 298, 50);
-                    } else {
-                        gc.fillText("99", posicaoXProximoCimaTurno, 278, 50);
-                        gc.fillText("+", posicaoXProximoCimaTurno, 298, 50);
-                    }
-
-                    //controle de posicionamento superior
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
                     posicaoXProximoCimaTurno += 100 * fila.getQtdeGuiches();
                 } else {
-                    //limpa barra
-                    gc.clearRect(posicaoXProximoCima + 2,138,43,170);
-
-                    //desenha barra
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,165,10,10);
-                    }
-
-                    //desenha tamanho da fila
-                    gc.setFont(Font.font(35));
-                    gc.setFill(Color.BLACK);
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCimaTurno, 298, 50);
-                    } else {
-                        gc.fillText("99", posicaoXProximoCimaTurno, 278, 50);
-                        gc.fillText("+", posicaoXProximoCimaTurno, 298, 50);
-                    }
-
-                    //controle de posicionamento superior
                     posicaoXProximoCima += 100;
                     posicaoXProximoCimaTurno += 100;
                 }
             }
             //desenha embaixo
             else {
+                //limpa barra
+                gc.clearRect(posicaoXProximoBaixo + 2,328,43,170);
+
+                //desenha barra
+                if(fila.getTamanhoFila() <= 99) {
+                    gc.fillRoundRect(posicaoXProximoBaixo + 4.5,495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                } else {
+                    gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,165,10,10);
+                }
+
+                //desenha tamanho da fila
+                gc.setFont(Font.font(35));
+                gc.setFill(Color.BLACK);
+                if(fila.getTamanhoFila() <= 99) {
+                    gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
+                } else {
+                    gc.fillText("99", posicaoXProximoBaixoTurno, 360, 50);
+                    gc.fillText("+", posicaoXProximoBaixoTurno, 380, 50);
+                }
+
+                //controle de posicionamento inferior
                 if (fila.getQtdeGuiches() > 1) {
-                    //limpa barra
-                    gc.clearRect(posicaoXProximoBaixo + 2,328,43,170);
-
-                    //desenha barra
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,165,10,10);
-                    }
-
-                    //desenha tamanho da fila
-                    gc.setFont(Font.font(35));
-                    gc.setFill(Color.BLACK);
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
-                    } else {
-                        gc.fillText("99", posicaoXProximoBaixoTurno, 360, 50);
-                        gc.fillText("+", posicaoXProximoBaixoTurno, 380, 50);
-                    }
-
-                    //controle de posicionamento inferior
                     posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
                     posicaoXProximoBaixoTurno += 100 * fila.getQtdeGuiches();
                 } else {
-                    //limpa barra
-                    gc.clearRect(posicaoXProximoBaixo + 2,328,43,170);
-
-                    //desenha barra
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
-                    } else {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,165,10,10);
-                    }
-
-                    //desenha tamanho da fila
-                    gc.setFont(Font.font(35));
-                    gc.setFill(Color.BLACK);
-                    if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
-                    } else {
-                        gc.fillText("99", posicaoXProximoBaixoTurno, 360, 50);
-                        gc.fillText("+", posicaoXProximoBaixoTurno, 380, 50);
-                    }
-
-                    //controle de posicionamento inferior
                     posicaoXProximoBaixo += 100;
                     posicaoXProximoBaixoTurno += 100;
                 }
@@ -531,7 +479,7 @@ public class Main extends Application {
         desenhaGuiches(gc, guiches, posicaoXProximoCima, posicaoXProximoBaixo, desenhados);
 
         //desenha filas
-        desenhaFilas(gc, filas, posicaoXProximoCima + 19, posicaoXProximoBaixo + 19);
+        desenhaFilas(gc, filas,posicaoXProximoCima + 19,posicaoXProximoBaixo + 19 + countGuiche * 100);
 
     }
     private void atualizaFila(Usuarios[] usuarios, Guiches[] guiches, Troca troca) {
@@ -559,124 +507,105 @@ public class Main extends Application {
             if(guiches[i].getFila().getTamanhoFila() > 0) {
                 //usuários
                 for (Usuarios usuario: usuarios) {
-                    //verifica se o usuário foi embora
-                    if(usuario.getTurnosNecessarios() != -2) {
-                        //verifica se o usuário chegou
-                        if(usuario.getTurnosNecessarios() != -1) {
-                            //verifica se usuário está sendo atendido
-                            if (guiches[i].getAtendente()) {
-                                //verifica se o guichê tem atendente
-                                if (!usuario.getSendoAtendido()) {
-                                    //verifica se o guichê está atendendo
-                                    if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
-                                        if (!guiches[i].getAtendendo()) {
-                                            usuario.setSendoAtendido(true);
-                                            usuario.diminuiTurnosNecessarios();
-                                            usuario.setQualGuicheSendoAtendido(i);
-                                            guiches[i].setAtendendo(true);
-                                            guiches[i].getFila().aumentaQtdeGuichesAtendendo();
-                                        } else {
-                                            //verifica a quantidade de guichês e de atendentes
-                                            if (guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
-                                                proximo = i + 1;
-                                                //verifica se algum guichê próximo está livre
-                                                for (int j = proximo; j < guiches.length; j++) {
-                                                    if (usuario.getPrecisaIr().charAt(0) != guiches[j].getTipo()) {
-                                                        if (j == guiches.length - 1) {
-                                                            guiches[i].getFila().aumentaTempoTotalEspera();
-                                                        }
-                                                    } else {
-                                                        break;
+                    //verifica se o usuário está no sistema
+                    if(usuario.getTurnosNecessarios() > -1) {
+                        //verifica se o guichê tem atendente
+                        if (guiches[i].getAtendente()) {
+                            //verifica se o usuário está sendo atendido
+                            if (!usuario.getSendoAtendido()) {
+                                //verifica se o loop está no guichê certo
+                                if (usuario.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                    if (!guiches[i].getAtendendo()) {
+                                        usuario.setSendoAtendido(true);
+                                        usuario.diminuiTurnosNecessarios();
+                                        usuario.setQualGuicheSendoAtendido(i);
+                                        guiches[i].setAtendendo(true);
+                                        guiches[i].getFila().aumentaQtdeGuichesAtendendo();
+                                    } else {
+                                        //verifica a quantidade de guichês e de atendentes
+                                        if (guiches[i].getFila().getQtdeGuiches() > 1 && guiches[i].getFila().getAtendentes() > 1) {
+                                            proximo = i + 1;
+                                            //verifica se algum guichê próximo está livre
+                                            for (int j = proximo; j < guiches.length; j++) {
+                                                if (usuario.getPrecisaIr().charAt(0) != guiches[j].getTipo()) {
+                                                    if (j == guiches.length - 1) {
+                                                        guiches[i].getFila().aumentaTempoTotalEspera();
                                                     }
+                                                } else {
+                                                    break;
                                                 }
-                                            } else {
-                                                guiches[i].getFila().aumentaTempoTotalEspera();
                                             }
+                                        } else {
+                                            guiches[i].getFila().aumentaTempoTotalEspera();
                                         }
                                     }
                                 }
-                                //se usuário estiver sendo atendido
-                                else {
-                                    //verifica se o loop está no guichê que ele está sendo atendido
-                                    if (usuario.getQualGuicheSendoAtendido() == i) {
-                                        //verifica quantos turnos faltam pra mudar de guichê
-                                        if (usuario.getTurnosNecessarios() >= 1) {
-                                            usuario.diminuiTurnosNecessarios();
+                            }
+                            //se usuário estiver sendo atendido
+                            else {
+                                //verifica se o loop está no guichê que ele está sendo atendido
+                                if (usuario.getQualGuicheSendoAtendido() == i) {
+                                    //verifica quantos turnos faltam pra mudar de guichê
+                                    if (usuario.getTurnosNecessarios() >= 1) {
+                                        usuario.diminuiTurnosNecessarios();
+                                    }
+                                    //se não faltar nenhum turno
+                                    else if (usuario.getTurnosNecessarios() == 0) {
+
+                                        guiches[i].setAtendendo(false);
+                                        guiches[i].getFila().diminuiTamanhoFila();
+                                        guiches[i].getFila().diminuiQtdeGuichesAtendendo();
+                                        usuario.setSendoAtendido(false);
+
+                                        //manda usuário pro próximo destino
+                                        if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
+                                            usuario.setPrecisaIr(null);
+                                            usuario.setTurnosNecessarios(-2);
+                                            usuario.setTurnosTotais(turno - usuario.getChegada());
+
+                                            //verifica se troca é necessária
+                                            verificaMudanca(guiches, troca, false);
                                         }
-                                        //se não faltar nenhum turno
-                                        else if (usuario.getTurnosNecessarios() == 0) {
+                                        else {
+                                            //corta o destino
+                                            usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
 
-                                            guiches[i].setAtendendo(false);
-                                            guiches[i].getFila().diminuiTamanhoFila();
-                                            guiches[i].getFila().diminuiQtdeGuichesAtendendo();
-                                            usuario.setSendoAtendido(false);
-
-                                            //se estiver no último guichê define precisaIr = null
-                                            if (usuario.getPrecisaIr().charAt(0) == usuario.getUltimoNecessario()) {
-                                                //usuário acabou
-                                                usuario.setPrecisaIr(null);
-                                                usuario.setTurnosNecessarios(-2);
-
-                                                if(usuario.getChegada() == 1) {
-                                                    usuario.setTurnosTotais(turno + 1 - usuario.getChegada());
-                                                }
-                                                else {
-                                                    usuario.setTurnosTotais(turno - usuario.getChegada());
-                                                }
-                                            }
-                                            else {
-                                                usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
+                                            //ajusta o guichê que o usuário vai
+                                            while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
+                                                proximoGuiche++;
+                                                count++;
                                             }
 
-                                            //verifica se algum usuário anterior está na mesma fila para ser atendido
-                                            if(guiches[i].getFila().getTamanhoFila() > 0) {
-                                                for(Usuarios usuario2: usuarios) {
-                                                    //se o usuário já chegou e foi passado atende
-                                                    if(usuario2.getChegada() <= turno && !usuario2.getSendoAtendido() && usuario2.getPrecisaIr() != null
-                                                            && guiches[i].getFila().getQtdeGuichesAtendendo() < guiches[i].getFila().getAtendentes()) {
-                                                        if (usuario2.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
-                                                            if (usuario2.getNumeroUsuario() < usuario.getNumeroUsuario()) {
-                                                                usuario2.setSendoAtendido(true);
-                                                                usuario2.diminuiTurnosNecessarios();
-                                                                usuario2.setQualGuicheSendoAtendido(i);
-                                                                guiches[i].setAtendendo(true);
-                                                                guiches[i].getFila().aumentaQtdeGuichesAtendendo();
-                                                                guiches[i].getFila().diminuiTempoTotalEspera();
-                                                            }
+                                            //ajusta as filas e turnos necessários
+                                            usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
+                                            usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
+                                            guiches[proximoGuiche].getFila().aumentaTamanhoFila();
+                                            guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
+
+                                            //volta próximo guichê para o inicial
+                                            proximoGuiche = 1;
+                                        }
+
+                                        //verifica se algum usuário anterior está na mesma fila para ser atendido
+                                        if(guiches[i].getFila().getTamanhoFila() > 0) {
+                                            for(Usuarios usuario2: usuarios) {
+                                                //se o usuário já chegou e foi passado atende
+                                                if(usuario2.getChegada() <= turno && !usuario2.getSendoAtendido() && usuario2.getPrecisaIr() != null
+                                                        && guiches[i].getFila().getQtdeGuichesAtendendo() < guiches[i].getFila().getAtendentes()) {
+                                                    if (usuario2.getPrecisaIr().charAt(0) == guiches[i].getTipo()) {
+                                                        if (usuario2.getNumeroUsuario() < usuario.getNumeroUsuario()) {
+                                                            usuario2.setSendoAtendido(true);
+                                                            usuario2.diminuiTurnosNecessarios();
+                                                            usuario2.setQualGuicheSendoAtendido(i);
+                                                            guiches[i].setAtendendo(true);
+                                                            guiches[i].getFila().aumentaQtdeGuichesAtendendo();
+                                                            guiches[i].getFila().diminuiTempoTotalEspera();
                                                         }
                                                     }
                                                 }
                                             }
-
-                                            //usuário não acabou
-                                            if (usuario.getPrecisaIr() != null) {
-                                                //usuário vai pro próximo
-                                                if (usuario.getPrecisaIr().charAt(0) == guiches[proximoGuiche].getTipo()) {
-                                                    usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                                    usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
-                                                    guiches[proximoGuiche].getFila().aumentaTamanhoFila();
-                                                    guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
-                                                } else {
-                                                    //avança próximo guichê até o que for necessário
-                                                    while (usuario.getPrecisaIr().charAt(0) != guiches[proximoGuiche].getTipo()) {
-                                                        proximoGuiche++;
-                                                        count++;
-                                                    }
-                                                    usuario.setTurnosNecessarios(guiches[proximoGuiche].getCusto());
-                                                    usuario.setTurnosTotais(guiches[proximoGuiche].getCusto());
-                                                    guiches[proximoGuiche].getFila().aumentaTamanhoFila();
-                                                    guiches[proximoGuiche].getFila().aumentaQtdeUsuarios();
-
-                                                    //volta próximo guichê para o inicial
-                                                    while (count > 0) {
-                                                        proximoGuiche--;
-                                                        count--;
-                                                    }
-                                                }
-                                            }
-                                            //verifica se troca é necessária
-                                            verificaMudanca(guiches, troca, false);
                                         }
+                                        //verifica
                                     }
                                 }
                             }
@@ -685,6 +614,9 @@ public class Main extends Application {
                 }
             }
         }
+
+        //verifica se troca é necessária
+        verificaMudanca(guiches, troca, false);
 
         //verifica se todos os usuários foram embora
         for(Usuarios usuario: usuarios) {
@@ -697,9 +629,6 @@ public class Main extends Application {
         if(contaFinal == usuarios.length) {
             done = true;
         }
-
-        //verifica se troca é necessária
-        verificaMudanca(guiches, troca, false);
 
     }
 
