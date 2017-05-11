@@ -41,7 +41,7 @@ public class Main extends Application {
     private Button botaoPara = new Button();
 
     //controle de fluxo e outros
-    private int turno = 0, tipoGuiche = 0, countCombinacao = 0, vezExplorador = 1;
+    private int turno = 0, tipoGuiche = 0, countCombinacao = 0, vezExplorador = 1, countGuiche = 0;
     private boolean done = false, desenhadoTurno = false, primeiraVez = true;
 
     //explorador de arquivos
@@ -226,7 +226,7 @@ public class Main extends Application {
         gc.setTextAlign(TextAlignment.CENTER);
 
         //legenda texto
-        gc.fillText("Guichê vazio", 1210,190);
+        gc.fillText("Guichê fechado", 1210,190);
         gc.fillText("Guichê", 1210,340);
         gc.fillText("atendendo", 1210,360);
         gc.fillText("Guichê livre", 1210, 510);
@@ -247,32 +247,40 @@ public class Main extends Application {
 
         gc.setFont(Font.font(20));
         //desenha rótulo do guichê
-        for(Guiches guiche: guiches) {
+        for(int i = 0; i < guiches.length; i++) {
             //propriedades dos rótulos
             gc.setFill(Color.BLACK);
             //desenha em cima
             if(desenhados < 10) {
-                gc.fillText(guiche.getRotulo(), posicaoXProximoCima + 42.5, 20, 90);
+                gc.fillText(guiches[i].getRotulo(), posicaoXProximoCima + 42.5, 20, 90);
                 desenhados++;
                 posicaoXProximoCima += 100;
+
+                if(desenhados == 10) {
+                    for(int j = i + 1; j < guiches.length; j++) {
+                        if(guiches[j].getTipo() == guiches[i].getTipo()) {
+                            countGuiche++;
+                        }
+                    }
+                }
             }
             //desenha embaixo
             else {
-                gc.fillText(guiche.getRotulo(), posicaoXProximoBaixo + 42.5, 625, 90);
+                gc.fillText(guiches[i].getRotulo(), posicaoXProximoBaixo + 42.5, 625, 90);
                 posicaoXProximoBaixo += 100;
             }
         }
 
         //controle de posicionamento para borda da fila
         posicaoXProximoCima = 92.5;
-        posicaoXProximoBaixo = 92.5;
+        posicaoXProximoBaixo = 92.5 + countGuiche * 100;
 
         //desenha borda
         for(Fila fila: filas) {
             //desenha em cima
             if(posicaoXProximoCima <= 992.5) {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoCima + 50 * (fila.getQtdeGuiches() - 1),135,50,175,10,10);
+                    gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
                     posicaoXProximoCima += 100 * fila.getQtdeGuiches();
                 } else {
                     gc.strokeRoundRect(posicaoXProximoCima,135,50,175,10,10);
@@ -282,7 +290,7 @@ public class Main extends Application {
             //desenha embaixo
             else {
                 if (fila.getQtdeGuiches() > 1) {
-                    gc.strokeRoundRect(posicaoXProximoBaixo + 50 * (fila.getQtdeGuiches() - 1),325,50,175,10,10);
+                    gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
                     posicaoXProximoBaixo += 100 * fila.getQtdeGuiches();
                 } else {
                     gc.strokeRoundRect(posicaoXProximoBaixo,325,50,175,10,10);
@@ -387,7 +395,8 @@ public class Main extends Application {
     private void desenhaFilas(GraphicsContext gc, Fila[] filas, double posicaoXProximoCima, double posicaoXProximoBaixo) {
 
         //controle
-        int posicaoXProximoCimaTurno = 117, posicaoXProximoBaixoTurno = 117;
+        int posicaoXProximoCimaTurno = 117, posicaoXProximoBaixoTurno = 117 + countGuiche * 100;
+        posicaoXProximoBaixo += countGuiche * 100;
 
         for(Fila fila: filas) {
             //define pintura da barra
@@ -397,23 +406,23 @@ public class Main extends Application {
             if(posicaoXProximoCima <= 994) {
                 if (fila.getQtdeGuiches() > 1) {
                     //limpa barra
-                    gc.clearRect(posicaoXProximoCima + 2 + 50 * (fila.getQtdeGuiches() - 1),138,43,170);
+                    gc.clearRect(posicaoXProximoCima + 2,138,43,170);
 
                     //desenha barra
                     if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5 + 50 * (fila.getQtdeGuiches() - 1),140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
-                        gc.fillRoundRect(posicaoXProximoCima + 4.5 + 50 * (fila.getQtdeGuiches() - 1),140,38,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoCima + 4.5,140,38,165,10,10);
                     }
 
                     //desenha tamanho da fila
                     gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
                     if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1), 298, 50);
+                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoCimaTurno, 298, 50);
                     } else {
-                        gc.fillText("99", posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1), 278, 50);
-                        gc.fillText("+", posicaoXProximoCimaTurno + 50 * (fila.getQtdeGuiches() - 1), 298, 50);
+                        gc.fillText("99", posicaoXProximoCimaTurno, 278, 50);
+                        gc.fillText("+", posicaoXProximoCimaTurno, 298, 50);
                     }
 
                     //controle de posicionamento superior
@@ -449,23 +458,23 @@ public class Main extends Application {
             else {
                 if (fila.getQtdeGuiches() > 1) {
                     //limpa barra
-                    gc.clearRect(posicaoXProximoBaixo + 2 + 50 * (fila.getQtdeGuiches() - 1),328,43,170);
+                    gc.clearRect(posicaoXProximoBaixo + 2,328,43,170);
 
                     //desenha barra
                     if(fila.getTamanhoFila() <= 99) {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1),495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
+                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,495 - (fila.getTamanhoFila() * 165) / 100,38,(fila.getTamanhoFila() * 165) / 100,10,10);
                     } else {
-                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5 + 50 * (fila.getQtdeGuiches() - 1),330,38,165,10,10);
+                        gc.fillRoundRect(posicaoXProximoBaixo + 4.5,330,38,165,10,10);
                     }
 
                     //desenha tamanho da fila
                     gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
                     if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 360, 50);
+                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
                     } else {
-                        gc.fillText("99", posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 360, 50);
-                        gc.fillText("+", posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 380, 50);
+                        gc.fillText("99", posicaoXProximoBaixoTurno, 360, 50);
+                        gc.fillText("+", posicaoXProximoBaixoTurno, 380, 50);
                     }
 
                     //controle de posicionamento inferior
@@ -486,7 +495,7 @@ public class Main extends Application {
                     gc.setFont(Font.font(35));
                     gc.setFill(Color.BLACK);
                     if(fila.getTamanhoFila() <= 99) {
-                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno + 50 * (fila.getQtdeGuiches() - 1), 360, 50);
+                        gc.fillText(Integer.toString(fila.getTamanhoFila()), posicaoXProximoBaixoTurno, 360, 50);
                     } else {
                         gc.fillText("99", posicaoXProximoBaixoTurno, 360, 50);
                         gc.fillText("+", posicaoXProximoBaixoTurno, 380, 50);
@@ -607,6 +616,7 @@ public class Main extends Application {
                                                 //usuário acabou
                                                 usuario.setPrecisaIr(null);
                                                 usuario.setTurnosNecessarios(-2);
+
                                                 if(usuario.getChegada() == 1) {
                                                     usuario.setTurnosTotais(turno + 1 - usuario.getChegada());
                                                 }
@@ -614,7 +624,6 @@ public class Main extends Application {
                                                     usuario.setTurnosTotais(turno - usuario.getChegada());
                                                 }
                                             }
-                                            //define proximo guichê para usuário
                                             else {
                                                 usuario.setPrecisaIr(usuario.getPrecisaIr().substring(1));
                                             }
@@ -705,8 +714,7 @@ public class Main extends Application {
             for (Guiches guicheQuePrecisa : guiches) {
                 //condições para o guichê precisar de uma troca
                 if (guicheQuePrecisa.getFila().getQtdeGuiches() > guicheQuePrecisa.getFila().getAtendentes()
-                        && !guicheQuePrecisa.getAtendente() && guicheQuePrecisa.getFila().getTamanhoFila() >= 1
-                        && guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()) {
+                        && !guicheQuePrecisa.getAtendente() && guicheQuePrecisa.getFila().getTamanhoFila() >= 1) {
 
                     //verifica guichês que podem fazer a troca
                     for (Guiches guiche : guiches) {
@@ -720,9 +728,8 @@ public class Main extends Application {
                             } else {
                                 //condições para começar uma nova troca
                                 if (guicheQuePrecisa.getFila().getQtdeTrocas()
-                                        + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getTamanhoFila()
-                                        && guiche.getAtendente() && !guiche.getAtendendo()
-                                        && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
+                                        + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getQtdeGuiches()
+                                        && guiche.getAtendente() && !guiche.getAtendendo()) {
 
                                     //auxiliar para divisão do que vai ceder
                                     if (guiche.getFila().getAtendentes() == 0) {
@@ -739,9 +746,11 @@ public class Main extends Application {
                                     }
 
                                     //verifica se vale a pena começar uma troca
-                                    if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
+                                    if ((Math.round(((guicheQuePrecisa.getFila().getTamanhoFila()
+                                            - guicheQuePrecisa.getFila().getAtendentes() - guicheQuePrecisa.getFila().getQtdeTrocas())
                                             * guicheQuePrecisa.getCusto()) / aux2)
-                                            > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux1) + troca.getCusto()) * 1.5)) {
+                                            > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
+                                            * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
 
                                         trocaAtendente(guicheQuePrecisa, troca, inicial);
                                         guiche.setAtendente(false);
@@ -756,8 +765,7 @@ public class Main extends Application {
                             //se a fila não estiver recebendo troca
                         } else {
                             //condições para começar uma nova troca
-                            if (!guiche.getAtendendo() && guiche.getAtendente() && guiche.getTipo() != guicheQuePrecisa.getTipo()
-                                    && guiche.getFila().getTamanhoFila() < guiche.getFila().getAtendentes()) {
+                            if (!guiche.getAtendendo() && guiche.getAtendente() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
 
                                 //auxiliar para divisão do que vai ceder
                                 if (guiche.getFila().getAtendentes() == 0) {
@@ -765,33 +773,26 @@ public class Main extends Application {
                                 } else {
                                     aux1 = guiche.getFila().getAtendentes();
                                 }
-
-                                //se o que precisa não tiver atendente
                                 if (guicheQuePrecisa.getFila().getAtendentes() == 0) {
-                                    if (guiche.getAtendente()) {
-                                        trocaAtendente(guicheQuePrecisa, troca, inicial);
-                                        guiche.setAtendente(false);
-                                        guiche.getFila().diminuiAtendentes();
-                                        guicheQuePrecisa.setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                        break;
-                                    }
-                                    //se tiver atendente
+                                    aux2 = 1;
                                 } else {
-                                    //verifica se vale a pena
-                                    if (Math.round(((guicheQuePrecisa.getFila().getTamanhoFila() - guicheQuePrecisa.getFila().getQtdeGuichesAtendendo())
-                                            * guicheQuePrecisa.getCusto()) / guicheQuePrecisa.getFila().getAtendentes())
-                                            > Math.round((((guiche.getFila().getTamanhoFila() * guiche.getCusto()) / aux1) + troca.getCusto()) * 1.5)) {
+                                    aux2 = guicheQuePrecisa.getFila().getAtendentes();
+                                }
 
-                                        trocaAtendente(guicheQuePrecisa, troca, inicial);
-                                        guiche.setAtendente(false);
-                                        guiche.getFila().diminuiAtendentes();
-                                        guicheQuePrecisa.setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                        break;
-                                    }
+                                //verifica se vale a pena
+                                if ((Math.round(((guicheQuePrecisa.getFila().getTamanhoFila()
+                                        - guicheQuePrecisa.getFila().getAtendentes() - guicheQuePrecisa.getFila().getQtdeTrocas())
+                                        * guicheQuePrecisa.getCusto()) / aux2)
+                                        > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
+                                        * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
+
+                                    trocaAtendente(guicheQuePrecisa, troca, inicial);
+                                    guiche.setAtendente(false);
+                                    guiche.getFila().diminuiAtendentes();
+                                    guicheQuePrecisa.setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().setRecebendoTroca(true);
+                                    guicheQuePrecisa.getFila().aumentaQtdeTrocas();
+                                    break;
                                 }
                             }
                         }
@@ -812,7 +813,7 @@ public class Main extends Application {
             if(inicial) {
                 novo.aumentaCountTroca();
                 //verifica se o custo da troca já foi pago
-                if (novo.getCountTroca() == troca.getCusto()) {
+                if (novo.getCountTroca() == troca.getCusto() + 1) {
                     novo.setAtendente(true);
                     novo.getFila().aumentaAtendentes();
                     novo.setRecebendoTroca(false);
