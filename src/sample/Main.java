@@ -646,80 +646,38 @@ public class Main extends Application {
 
                     //verifica guichês que podem fazer a troca
                     for (Guiches guiche : guiches) {
+                        if (guicheQuePrecisa.getRecebendoTroca()) {
+                            trocaAtendente(guicheQuePrecisa, troca, inicial);
+                            break;
+                        }
                         //se a fila já estiver recebendo uma troca
-                        if (guicheQuePrecisa.getFila().getRecebendoTroca()) {
-                            //se o guichê já estiver recebendo uma troca
-                            if (guicheQuePrecisa.getRecebendoTroca()) {
+                        else if(guiche.getAtendente() && !guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
+                            //auxiliar para divisão
+                            if (guiche.getFila().getAtendentes() == 0) {
+                                aux1 = 1;
+                            } else {
+                                aux1 = guiche.getFila().getAtendentes();
+                            }
+                            if (guicheQuePrecisa.getFila().getAtendentes() == 0) {
+                                aux2 = 1;
+                            } else {
+                                aux2 = guicheQuePrecisa.getFila().getAtendentes();
+                            }
+
+                            //verifica se vale a pena trocar
+                            if ((Math.round(((guicheQuePrecisa.getFila().getTamanhoFila()
+                                    - guicheQuePrecisa.getFila().getAtendentes() - guicheQuePrecisa.getFila().getQtdeTrocas())
+                                    * guicheQuePrecisa.getCusto()) / aux2)
+                                    > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
+                                    * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
+
+                                guiche.setAtendente(false);
+                                guiche.getFila().diminuiAtendentes();
+                                guicheQuePrecisa.setRecebendoTroca(true);
+                                guicheQuePrecisa.getFila().setRecebendoTroca(true);
+                                guicheQuePrecisa.getFila().aumentaQtdeTrocas();
                                 trocaAtendente(guicheQuePrecisa, troca, inicial);
                                 break;
-                                //se o guichê não estiver recebendo uma troca e vai começar agora
-                            } else {
-                                //condições para começar uma nova troca
-                                if (guicheQuePrecisa.getFila().getQtdeTrocas()
-                                        + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getQtdeGuiches()
-                                        && guiche.getAtendente() && !guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
-
-                                    //auxiliar para divisão
-                                    if (guiche.getFila().getAtendentes() == 0) {
-                                        aux1 = 1;
-                                    } else {
-                                        aux1 = guiche.getFila().getAtendentes();
-                                    }
-                                    if (guicheQuePrecisa.getFila().getAtendentes() == 0) {
-                                        aux2 = 1;
-                                    } else {
-                                        aux2 = guicheQuePrecisa.getFila().getAtendentes();
-                                    }
-
-                                    //verifica se vale a pena começar uma troca
-                                    if ((Math.round(((guicheQuePrecisa.getFila().getTamanhoFila()
-                                            - guicheQuePrecisa.getFila().getAtendentes() - guicheQuePrecisa.getFila().getQtdeTrocas())
-                                            * guicheQuePrecisa.getCusto()) / aux2)
-                                            > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
-                                            * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
-
-                                        trocaAtendente(guicheQuePrecisa, troca, inicial);
-                                        guiche.setAtendente(false);
-                                        guiche.getFila().diminuiAtendentes();
-                                        guicheQuePrecisa.setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().setRecebendoTroca(true);
-                                        guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                        break;
-                                    }
-                                }
-                            }
-                            //se a fila não estiver recebendo troca
-                        } else {
-                            //condições para começar uma nova troca
-                            if (!guiche.getAtendendo() && guiche.getAtendente() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
-
-                                //auxiliar para divisão
-                                if (guiche.getFila().getAtendentes() == 0) {
-                                    aux1 = 1;
-                                } else {
-                                    aux1 = guiche.getFila().getAtendentes();
-                                }
-                                if (guicheQuePrecisa.getFila().getAtendentes() == 0) {
-                                    aux2 = 1;
-                                } else {
-                                    aux2 = guicheQuePrecisa.getFila().getAtendentes();
-                                }
-
-                                //verifica se vale a pena
-                                if ((Math.round(((guicheQuePrecisa.getFila().getTamanhoFila()
-                                        - guicheQuePrecisa.getFila().getAtendentes() - guicheQuePrecisa.getFila().getQtdeTrocas())
-                                        * guicheQuePrecisa.getCusto()) / aux2)
-                                        > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
-                                        * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
-
-                                    trocaAtendente(guicheQuePrecisa, troca, inicial);
-                                    guiche.setAtendente(false);
-                                    guiche.getFila().diminuiAtendentes();
-                                    guicheQuePrecisa.setRecebendoTroca(true);
-                                    guicheQuePrecisa.getFila().setRecebendoTroca(true);
-                                    guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                    break;
-                                }
                             }
                         }
                     }
