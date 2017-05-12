@@ -671,12 +671,12 @@ public class Main extends Application {
                                     > Math.round(((((guiche.getFila().getTamanhoFila() - guiche.getFila().getQtdeGuichesAtendendo())
                                     * guiche.getCusto()) / aux1) + troca.getCusto()) * 2)) || guiche.getFila().getTamanhoFila() == 0) {
 
+                                trocaAtendente(guicheQuePrecisa, troca, inicial);
                                 guiche.setAtendente(false);
                                 guiche.getFila().diminuiAtendentes();
                                 guicheQuePrecisa.setRecebendoTroca(true);
                                 guicheQuePrecisa.getFila().setRecebendoTroca(true);
                                 guicheQuePrecisa.getFila().aumentaQtdeTrocas();
-                                trocaAtendente(guicheQuePrecisa, troca, inicial);
                                 break;
                             }
                         }
