@@ -20,6 +20,42 @@ class Fila {
         this.qtdeGuiches++;
     }
 
+    //quantidade guichês em atendimento
+    private int qtdeGuichesAtendendo = 0;
+    int getQtdeGuichesAtendendo() {
+        return qtdeGuichesAtendendo;
+    }
+    void aumentaQtdeGuichesAtendendo() {
+        this.qtdeGuichesAtendendo++;
+    }
+    void diminuiQtdeGuichesAtendendo() {
+        this.qtdeGuichesAtendendo--;
+    }
+
+    //quantidade de atendentes na fila
+    private int atendentes = 0;
+    int getAtendentes() {
+        return atendentes;
+    }
+    void aumentaAtendentes() {
+        this.atendentes++;
+    }
+    void diminuiAtendentes() {
+        this.atendentes--;
+    }
+
+    //tamanho da fila
+    private int tamanhoFila = 0;
+    int getTamanhoFila() {
+        return tamanhoFila;
+    }
+    void aumentaTamanhoFila() {
+        this.tamanhoFila++;
+    }
+    void diminuiTamanhoFila() {
+        this.tamanhoFila--;
+    }
+
     //verifica se a fila está recebendo troca
     private boolean recebendoTroca = false;
     boolean getRecebendoTroca() {
@@ -39,42 +75,6 @@ class Fila {
     }
     void diminuiQtdeTrocas() {
         this.qtdeTrocas--;
-    }
-
-    //quantidade guichês em atendimento
-    private int qtdeGuichesAtendendo = 0;
-    int getQtdeGuichesAtendendo() {
-        return qtdeGuichesAtendendo;
-    }
-    void aumentaQtdeGuichesAtendendo() {
-        this.qtdeGuichesAtendendo++;
-    }
-    void diminuiQtdeGuichesAtendendo() {
-        this.qtdeGuichesAtendendo--;
-    }
-
-    //tamanho da fila
-    private int tamanhoFila = 0;
-    int getTamanhoFila() {
-        return tamanhoFila;
-    }
-    void aumentaTamanhoFila() {
-        this.tamanhoFila++;
-    }
-    void diminuiTamanhoFila() {
-        this.tamanhoFila--;
-    }
-
-    //quantidade de atendentes na fila
-    private int atendentes = 0;
-    int getAtendentes() {
-        return atendentes;
-    }
-    void aumentaAtendentes() {
-        this.atendentes++;
-    }
-    void diminuiAtendentes() {
-        this.atendentes--;
     }
 
     //quantidade de usuários que passaram pela fila

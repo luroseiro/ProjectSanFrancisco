@@ -657,16 +657,14 @@ public class Main extends Application {
                                 //condições para começar uma nova troca
                                 if (guicheQuePrecisa.getFila().getQtdeTrocas()
                                         + guicheQuePrecisa.getFila().getAtendentes() < guicheQuePrecisa.getFila().getQtdeGuiches()
-                                        && guiche.getAtendente() && !guiche.getAtendendo()) {
+                                        && guiche.getAtendente() && !guiche.getAtendendo() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
 
-                                    //auxiliar para divisão do que vai ceder
+                                    //auxiliar para divisão
                                     if (guiche.getFila().getAtendentes() == 0) {
                                         aux1 = 1;
                                     } else {
                                         aux1 = guiche.getFila().getAtendentes();
                                     }
-
-                                    //auxiliar para divisão do que vai receber
                                     if (guicheQuePrecisa.getFila().getAtendentes() == 0) {
                                         aux2 = 1;
                                     } else {
@@ -695,7 +693,7 @@ public class Main extends Application {
                             //condições para começar uma nova troca
                             if (!guiche.getAtendendo() && guiche.getAtendente() && guiche.getTipo() != guicheQuePrecisa.getTipo()) {
 
-                                //auxiliar para divisão do que vai ceder
+                                //auxiliar para divisão
                                 if (guiche.getFila().getAtendentes() == 0) {
                                     aux1 = 1;
                                 } else {

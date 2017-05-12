@@ -38,18 +38,6 @@ class Usuarios {
         this.ultimoNecessario = ultimoNecessario;
     }
 
-    //turnos necessários para o usuário
-    private int turnosNecessarios = -1;
-    int getTurnosNecessarios() {
-        return turnosNecessarios;
-    }
-    void setTurnosNecessarios(int turnosNecessarios) {
-        this.turnosNecessarios += turnosNecessarios;
-    }
-    void diminuiTurnosNecessarios() {
-        this.turnosNecessarios--;
-    }
-
     //sendo atendido
     private boolean sendoAtendido = false;
     boolean getSendoAtendido() {
@@ -68,6 +56,18 @@ class Usuarios {
         this.qualGuicheSendoAtendido = qualGuicheSendoAtendido;
     }
 
+    //turnos necessários para o usuário
+    private int turnosNecessarios = -1;
+    int getTurnosNecessarios() {
+        return turnosNecessarios;
+    }
+    void setTurnosNecessarios(int turnosNecessarios) {
+        this.turnosNecessarios += turnosNecessarios;
+    }
+    void diminuiTurnosNecessarios() {
+        this.turnosNecessarios--;
+    }
+
     //turnos totais que o usuário demorou
     private int turnosTotais = 0;
     int getTurnosTotais() {
@@ -77,15 +77,6 @@ class Usuarios {
         this.turnosTotais = turnosTotais;
     }
 
-    //verifica se o usuário está numa combinação
-    private boolean estaNumaCombinacao = false;
-    boolean getEstaNumaCombinacao() {
-        return estaNumaCombinacao;
-    }
-    void setEstaNumaCombinacao() {
-        this.estaNumaCombinacao = true;
-    }
-
     //coloca o usuário em uma combinação
     private Combinacoes combinacao;
     Combinacoes getCombinacao() {
@@ -93,6 +84,15 @@ class Usuarios {
     }
     void setCombinacao(Combinacoes combinacao) {
         this.combinacao = combinacao;
+    }
+
+    //verifica se o usuário está numa combinação
+    private boolean estaNumaCombinacao = false;
+    boolean getEstaNumaCombinacao() {
+        return estaNumaCombinacao;
+    }
+    void setEstaNumaCombinacao() {
+        this.estaNumaCombinacao = true;
     }
 
     //verifica se o usuário já foi subtraido da conta de combinação
